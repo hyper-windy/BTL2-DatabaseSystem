@@ -1,9 +1,9 @@
 CREATE TABLE GIAOLO(
     _long 		FLOAT(10,7)		NOT NULL,
     _lat 		FLOAT(10,7)		NOT NULL,
-	_id			int				NOT NULL		UNIQUE		AUTO_INCREMENT);
+	_id			INT 			NOT NULL		UNIQUE		AUTO_INCREMENT);
 
-/*insert into GIAOLO
+insert into GIAOLO
 	values(1,1,NULL);
 insert into GIAOLO
 	values(2,1,NULL);
@@ -12,7 +12,7 @@ insert into GIAOLO
 insert into GIAOLO
 	values(1,5,NULL);
 insert into GIAOLO
-	values(17,1,NULL);*/
+	values(17,1,NULL);
     
 ALTER TABLE GIAOLO
 	ADD	_Ma_giao_lo VARCHAR(8) DEFAULT NULL;
@@ -54,10 +54,7 @@ CREATE TABLE GA_TRAM(
     _Ma_giao_lo_1	varchar(8) 	,
     _Ma_giao_lo_2	varchar(8) 	,    
     constraint _name1
-		check ( substr(_Ma_ga_tram,1,1) = 'T' OR substr(_Ma_ga_tram,1,1) = 'B' ),
-	constraint _name2
-        check ( substr(_Ma_ga_tram,2,1) = 'T'),
-	constraint _name3
+		check (__Ma_ga_tram like 'BT_____' or __Ma_ga_tram like 'TT_____'),
         check ( cast(substr(_Ma_ga_tram,3,5) as SIGNED) >= 0 AND cast(substr(_Ma_ga_tram,3,5) as SIGNED) <=99999));
    
 #insert

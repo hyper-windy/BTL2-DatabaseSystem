@@ -1,51 +1,12 @@
 CREATE TABLE GIAOLO(
-    _long 		FLOAT(10,7)		NOT NULL,
-    _lat 		FLOAT(10,7)		NOT NULL,
-	_id			int				NOT NULL		UNIQUE		AUTO_INCREMENT);
-
-insert into GIAOLO
-	values(1,1,NULL);
-insert into GIAOLO
-	values(2,1,NULL);
-insert into GIAOLO
-	values(1,3,NULL);
-insert into GIAOLO
-	values(1,5,NULL);
-insert into GIAOLO
-	values(17,1,NULL);
-    
-ALTER TABLE GIAOLO
-	ADD	_Ma_giao_lo VARCHAR(8) DEFAULT NULL;
-UPDATE GIAOLO SET _Ma_giao_lo = CONCAT("GL",_id);
-ALTER TABLE GIAOLO
-	ADD		PRIMARY KEY (_Ma_giao_lo);
-ALTER TABLE GIAOLO
-	DROP COLUMN	_id;
+     _Ma_giao_lo VARCHAR(8)		PRIMARY KEY,
+     _long 		FLOAT(10,7)		NOT NULL,
+     _lat 		FLOAT(10,7)		NOT NULL);
    
 CREATE TABLE CONDUONG(
     _Ten_duong		varchar(100)	UNIQUE		NOT NULL,
-    _id			int				NOT NULL		UNIQUE		AUTO_INCREMENT);
-    
-#insert
-insert into CONDUONG
-	values("Hung",NULL);
-insert into CONDUONG
-	values("Cuong",NULL);
-insert into CONDUONG
-	values("Dang",NULL);
-insert into CONDUONG
-	values("Le",NULL);
-insert into CONDUONG
-	values("Dinh",NULL);
+    _Ma_con_duong	varchar(8)		PRIMARY KEY);
 
-ALTER TABLE CONDUONG
-	ADD	_Ma_con_duong VARCHAR(8) DEFAULT NULL;
-UPDATE CONDUONG SET _Ma_con_duong = CONCAT("CD",_id);
-ALTER TABLE CONDUONG
-	ADD		PRIMARY KEY (_Ma_con_duong);
-ALTER TABLE CONDUONG
-	DROP COLUMN	_id;  
-    
 CREATE TABLE DOANDUONG(
 	_Ma_giao_lo_1	varchar(8),
     _Ma_giao_lo_2	varchar(8),
@@ -80,6 +41,49 @@ ALTER TABLE GA_TRAM
 	ADD 	CONSTRAINT _fkey_gatram1	FOREIGN KEY GA_TRAM (_Ma_giao_lo_1) REFERENCES DOANDUONG (_Ma_giao_lo_1);
 ALTER TABLE GA_TRAM
 	ADD 	CONSTRAINT _fkey_gatram2	FOREIGN KEY GA_TRAM (_Ma_giao_lo_2) REFERENCES DOANDUONG (_Ma_giao_lo_2);
+
+DELIMITER $$
+CREATE TRIGGER before_GIAOLO_insert
+BEFORE INSERT
+ON GIAOLO FOR EACH ROW
+BEGIN
+	DECLARE Tong 	INT;
+	SELECT COUNT(*) AS Tong INTO Tong
+	FROM GIAOLO ;
+	SET NEW._Ma_giao_lo = CONCAT("GL",Tong + 1);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER before_CONDUONG_insert
+BEFORE INSERT
+ON CONDUONG FOR EACH ROW
+BEGIN
+	DECLARE Tong 	INT;
+	SELECT COUNT(*) AS Tong INTO Tong
+	FROM CONDUONG ;
+	SET NEW._Ma_con_duong = CONCAT("CD",Tong + 1);
+END $$
+DELIMITER ;
+
+
+insert into GIAOLO (_long, _lat) values(1,1);
+insert into GIAOLO (_long, _lat) values(1,2);
+insert into GIAOLO (_long, _lat) values(1,3);
+insert into GIAOLO (_long, _lat) values(1,4);
+insert into GIAOLO (_long, _lat) values(1,5);
+
+#insert
+insert into CONDUONG (_Ten_duong)
+	values("Hung");
+insert into CONDUONG(_Ten_duong)
+	values("Cuong");
+insert into CONDUONG(_Ten_duong)
+	values("Dang");
+insert into CONDUONG(_Ten_duong)
+	values("Le");
+insert into CONDUONG(_Ten_duong)
+	values("Dinh");
 
 #insert
 insert into DOANDUONG

@@ -42,15 +42,32 @@ ALTER TABLE GA_TRAM
 ALTER TABLE GA_TRAM
 	ADD 	CONSTRAINT _fkey_gatram2	FOREIGN KEY GA_TRAM (_Ma_giao_lo_2) REFERENCES DOANDUONG (_Ma_giao_lo_2);
 
+
 DELIMITER $$
 CREATE TRIGGER before_GIAOLO_insert
 BEFORE INSERT
 ON GIAOLO FOR EACH ROW
 BEGIN
-	DECLARE Tong 	INT;
+    DECLARE Tong 	INT;
+    DECLARE Tong1 	INT;
 	SELECT COUNT(*) AS Tong INTO Tong
 	FROM GIAOLO ;
+    IF Tong = 0 THEN
 	SET NEW._Ma_giao_lo = CONCAT("GL",Tong + 1);
+        
+    ELSE
+	SELECT    cast(substr(_Ma_giao_lo,3,LENGTH(_Ma_giao_lo) - 2) as signed) 
+        FROM GIAOLO 
+        ORDER BY  cast(substr(_Ma_giao_lo,3,LENGTH(_Ma_giao_lo) - 2) as signed) DESC
+        LIMIT 1 
+        INTO Tong1;
+        
+		IF Tong = Tong1 THEN
+			SET NEW._Ma_giao_lo = CONCAT("GL",Tong + 1);
+		ELSE	
+			SET NEW._Ma_giao_lo = CONCAT("GL",Tong1 + 1);
+		END IF;
+	END IF;
 END $$
 DELIMITER ;
 
@@ -59,19 +76,35 @@ CREATE TRIGGER before_CONDUONG_insert
 BEFORE INSERT
 ON CONDUONG FOR EACH ROW
 BEGIN
-	DECLARE Tong 	INT;
-	SELECT COUNT(*) AS Tong INTO Tong
-	FROM CONDUONG ;
-	SET NEW._Ma_con_duong = CONCAT("CD",Tong + 1);
+    DECLARE Tong 	INT;
+    DECLARE Tong1 	INT;
+    SELECT COUNT(*) AS Tong INTO Tong
+    FROM CONDUONG ;
+    IF Tong = 0 THEN
+		SET NEW._Ma_con_duong = CONCAT("CD",Tong + 1);
+        
+    ELSE
+	SELECT    cast(substr(_Ma_con_duong,3,LENGTH(_Ma_con_duong) - 2) as signed) 
+        FROM CONDUONG 
+        ORDER BY  cast(substr(_Ma_con_duong,3,LENGTH(_Ma_con_duong) - 2) as signed) DESC
+        LIMIT 1 
+        INTO Tong1;
+        
+		IF Tong = Tong1 THEN
+			SET NEW._Ma_con_duong = CONCAT("CD",Tong + 1);
+		ELSE	
+			SET NEW._Ma_con_duong = CONCAT("CD",Tong1 + 1);
+		END IF;
+	END IF;
 END $$
 DELIMITER ;
-
 
 insert into GIAOLO (_long, _lat) values(1,1);
 insert into GIAOLO (_long, _lat) values(1,2);
 insert into GIAOLO (_long, _lat) values(1,3);
 insert into GIAOLO (_long, _lat) values(1,4);
 insert into GIAOLO (_long, _lat) values(1,5);
+
 
 #insert
 insert into CONDUONG (_Ten_duong)
@@ -109,4 +142,3 @@ insert into GA_TRAM
 insert into GA_TRAM
 	values("TT00003","nha tau5","tau5",TRUE,"GL5","GL1");
     
-

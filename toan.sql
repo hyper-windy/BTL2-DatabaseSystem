@@ -5,10 +5,9 @@ use test;
 CREATE TABLE TUYENTAU_XE (
 	ma_tuyen 			CHAR(4) 							PRIMARY KEY,
     CONSTRAINT 			_name1
+		CHECK 	(ma_tuyen like '____'),
 		CHECK	(SUBSTRING(ma_tuyen,1,1) = 'B' or SUBSTRING(ma_tuyen,1,1) = 'T'),
-		CHECK	(CAST(SUBSTRING(ma_tuyen,2,1) as SIGNED) >= 0 and CAST(SUBSTRING(ma_tuyen,2,1) as SIGNED) <= 9),
-        CHECK	(CAST(SUBSTRING(ma_tuyen,3,1) as SIGNED) >= 0 and CAST(SUBSTRING(ma_tuyen,3,1) as SIGNED) <= 9),
-        CHECK	(CAST(SUBSTRING(ma_tuyen,4,1) as SIGNED) >= 0 and CAST(SUBSTRING(ma_tuyen,4,1) as SIGNED) <= 9)
+		CHECK	(CAST(SUBSTRING(ma_tuyen,2,3) as SIGNED) >= 0 and CAST(SUBSTRING(ma_tuyen,2,3) as SIGNED) <= 999)
 );
 
 INSERT INTO TUYENTAU_XE VALUES ('B00A');

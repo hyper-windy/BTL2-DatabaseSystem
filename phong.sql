@@ -22,10 +22,10 @@ CREATE TABLE NV (
     email CHAR(30),
     sex CHAR,
     mobile_phone INT,
-    intern_phone INT
-    CONSTRAINT _ma
+    intern_phone INT,
+	CONSTRAINT _maNV
 		CHECK 	(MaNV like 'NV____'),
-		CHECK	(CAST(SUBSTRING(MaNV,3,4) as SIGNED) >= 0 and CAST(SUBSTRING(MaNV,3,4) as SIGNED) <= 9999)
+		CHECK	(CAST(SUBSTR(MaNV,3,4) as SIGNED) >= 0 and CAST(SUBSTR(MaNV,3,4) as SIGNED) <= 9999)
 );
 
 CREATE TABLE Ga_TramLV (
@@ -38,11 +38,6 @@ ALTER TABLE Ga_TramLV
 ALTER TABLE Ga_TramLV
 	ADD CONSTRAINT _fkey2 FOREIGN KEY (MaGT) REFERENCES GA_TRAM(_Ma_ga_tram);
     
-CREATE TABLE Gia (
-    ID INT PRIMARY KEY,
-    bus DECIMAL(10 , 3 ),
-    mot_ngay DECIMAL(10 , 3 ),
-    cuoi_tuan DECIMAL(10 , 3 )
-);
+#------------------------------- [INSERT] -------------------------------#
 
-
+#------------------------------------------------------------------------#

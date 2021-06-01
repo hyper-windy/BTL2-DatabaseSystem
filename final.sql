@@ -1,4 +1,4 @@
- -- drop SCHEMA btl;
+ drop SCHEMA btl;
 
 create schema btl;
 use	btl;
@@ -396,6 +396,66 @@ DELIMITER ;
 #---------------------------------------------------------------------------------------------#
 
 #-------------------------------------- [PROCEDURE] ----------------------------------#
+-- 1 --
+DELIMITER $$
+CREATE PROCEDURE LoTrinhTuyenXeTau(IN ma_tuyen CHAR(4))
+BEGIN
+	SELECT _Ten
+   	FROM ghega_tram ch, GA_TRAM gt
+   	WHERE gt._Ma_ga_tram = ch.MaGT AND ch.Ma_tuyen = ma_tuyen
+   	ORDER BY ch.STT_dung;
+END; $$
+DELIMITER ;
+
+-- 2 --
+DELIMITER $$
+CREATE PROCEDURE ThongKeLuotNguoi (
+	IN matuyen CHAR(4), 
+	IN fromDate CHAR(10), 
+	IN toDate CHAR(10)
+)
+BEGIN
+		DECLARE numberofDays 		INT;
+    	DECLARE i 			INT DEFAULT 0;
+        DECLARE Fdate		DATE;
+        DECLARE Tdate		DATE;
+    	DECLARE Tong1 			INT DEFAULT 0;
+		DECLARE Tong2 			INT DEFAULT 0;
+    	DECLARE Tong3 			INT DEFAULT 0;
+	
+        SET Fdate = STR_TO_DATE(fromDate,'%d/%m/%Y');
+		SET Tdate = STR_TO_DATE(toDate,'%d/%m/%Y');
+		
+    	CREATE TABLE Bang (
+		Ngay	CHAR(10) 	PRIMARY KEY,
+		TongSoLuotNguoi	INT);
+    
+    	SET numberofDays = DATEDIFF(TDate, FDate);
+    	WHILE (i<=numberofDays) DO
+		SELECT COUNT(*) AS Tong1 INTO Tong1 
+		FROM VE_LE vl
+        	WHERE vl.Ngay_su_dung = DATE_ADD(FDate, INTERVAL i DAY) AND vl.Ma_tuyen = matuyen;   
+		
+		SELECT COUNT(*) AS Tong2 INTO Tong2 
+		FROM VE_THANG vt, HOAT_DONG_VE_THANG hdvt
+        	WHERE vt.Ma_ve = hdvt.Ma_ve AND hdvt.Ngay_su_dung = DATE_ADD(FDate, INTERVAL i DAY) AND vt.Ma_tuyen = matuyen;  
+		
+		SELECT COUNT(*) AS Tong3 INTO Tong3 
+		FROM VE_1_NGAY vn, hoat_dong_ve_1_ngay hdvn
+       		WHERE vn.Ma_ve = hdvn.Ma_ve AND vn.Ngay_su_dung = DATE_ADD(FDate, INTERVAL i DAY) AND hdvn.Ma_tuyen = matuyen;
+		insert into Bang values (DATE_FORMAT(DATE_ADD(FDate, INTERVAL i DAY), '%d/%m/%Y'),Tong1+Tong2+Tong3);
+		SET i=i+1;
+        
+	END WHILE;
+    
+     	SELECT *
+        From Bang
+		ORDER BY STR_TO_DATE(Ngay,'%d/%m/%Y');
+		drop table Bang;
+        
+END; $$
+DELIMITER ;ThongKeLuotNguoi
+#CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
 #-------------------------------------------------------------------------------------#
 
 #-------------------------------------------------------- [INSERT] ----------------------------------------------#
@@ -629,9 +689,9 @@ insert into ga_tramlv
 	values("NV0004","TT00002");
 insert into ga_tramlv
 	values("NV0005","TT00003");
-#-----------------------------------
-
-insert into bang_ve values('giave',3.000,10.000,12.000);
-
 
 #--------------------------------------------------------------------------------
+insert into bang_ve values('giave',3.000,10.000,12.000);
+
+#--------------------------------------------------------------------------------
+

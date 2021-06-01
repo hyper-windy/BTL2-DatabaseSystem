@@ -1,4 +1,5 @@
-drop SCHEMA btl;
+-- drop SCHEMA btl;
+
 create schema btl;
 use	btl;
 
@@ -98,8 +99,8 @@ CREATE TABLE VE_LE
     Ma_tuyen  CHAR(4) NOT NULL, 
     Ngay_su_dung DATE,
     Ma_ga_tram_len  CHAR(7) NOT NULL,
-    Ma_ga_tram_xuong  CHAR(7) NOT NULL,
     Gio_len  TIME,
+    Ma_ga_tram_xuong  CHAR(7) NOT NULL,
     Gio_xuong TIME,
     CONSTRAINT _ma_ve
 		CHECK(SUBSTRING(Ma_ve,1,2) = 'VO'),
@@ -188,7 +189,7 @@ constraint fk17_Ma_hanh_khach
 );
 #---------------------------BANG VE-----------------------------------------------------
 CREATE TABLE Bang_ve (
-     ID INT PRIMARY KEY,
+     ID VARCHAR(10) PRIMARY KEY,
      bus DECIMAL(10 , 3 ),
      ve_1_ngay DECIMAL(10 , 3 ),
     cuoi_tuan DECIMAL(10 , 3 )
@@ -444,74 +445,191 @@ insert into GA_TRAM
 	values("TT00003","nha tau5","tau5",TRUE,"GL5","GL1");
     
 #--------------------------------------------
+insert into tuyentau_xe
+	values("B001");
+insert into tuyentau_xe
+	values("B002");
+insert into tuyentau_xe
+	values("B003");
+insert into tuyentau_xe
+	values("B004");
+insert into tuyentau_xe
+	values("B005");
+insert into tuyentau_xe
+	values("T001");
+insert into tuyentau_xe
+	values("T002");
+insert into tuyentau_xe
+	values("T003");
+insert into tuyentau_xe
+	values("T004");
+insert into tuyentau_xe
+	values("T005");
+#---------------------------------------------
+insert into tuyenxebus
+	values(1,"B001");
+insert into tuyenxebus
+	values(2,"B002");
+ insert into tuyenxebus
+	values(3,"B003");   
+ insert into tuyenxebus
+	values(4,"B004");   
+insert into tuyenxebus
+	values(5,"B005"); 
 
-insert into Ga_tram values ("TT00001");
-insert into Ga_tram values ("TT00002");
-insert into Ga_tram values ("TT00003");
-insert into Tuyen_tau_xe values ("T001");
-
-#--------------------------------------------------------------------------------
-
-insert into Hanh_khach values("KH000001","233316009","Sinh vien","0355665365",'M',"luan.le912@hcmut.edu.vn",'2001-12-9');
-insert into VE values ("VM1805202100002",1,50.000,"2021-05-18 12:0:0","KH000001");
-insert into Ve_thang values ("VM1805202100002","T001","TT00001","TT00002");
-
-#--------------------------------------------------------------------------------
-
-insert into Hoat_dong_ve_thang values ("VM1805202100002",'2022-05-18','123000','124541',"TT00002","TT00002");
-SET SQL_SAFE_UPDATES = 0;
-insert into Bang_ve values (1,5.000,10.000,12.000);
-SET SQL_SAFE_UPDATES = 1;
-
-#--------------------------------------------------------------------------------
-
-insert into Ve_thang values ("VM1805202100002");
-insert into Ve_thang values ("VM1905202100002");
-insert into Ve_thang values ("VM2005202100002");
-insert into Ve_thang values ("VM2105202100002");
-insert into Ve_thang values ("VM2205202100002");
-
-#--------------------------------------------------------------------------------
-
-insert into Ve_1_ngay values("VD1805202100002");
-insert into Ve_1_ngay values("VD1905202100002");
-insert into Ve_1_ngay values("VD2005202100002");
-insert into Ve_1_ngay values("VD2105202100002");
-insert into Ve_1_ngay values("VD2205202100002");
-
-#--------------------------------------------------------------------------------
-
-
-
-#--------------------------------------------------------------------------------
-
-insert into Hoat_dong_ve_thang values ("VM1805202100002",'2021-05-18','123000','124541',"BT00001","BT00001");
-insert into Hoat_dong_ve_thang values ("VM1905202100002",'2021-05-19','073021','084241',"BT00001","BT00001");
-insert into Hoat_dong_ve_thang values ("VM2005202100002",'2021-05-20','082521','104241',"BT00001","BT00001");
-insert into Hoat_dong_ve_thang values ("VM2105202100002",'2021-05-21','062121','074241',"BT00001","BT00001");
-insert into Hoat_dong_ve_thang values ("VM2205202100002",'2021-05-22','122121','144241',"BT00001","BT00001");
-
-#--------------------------------------------------------------------------------
-
-insert into Hoat_dong_ve_1_ngay values("VD1805202100002",1,"B001","BT00001","BT00001",'123000','124541');
-insert into Hoat_dong_ve_1_ngay values("VD1805202100002",2,"B001","BT00001","BT00001",'125000','134541');
-insert into Hoat_dong_ve_1_ngay values("VD1905202100002",1,"B001","BT00001","BT00001",'123000','124541');
-insert into Hoat_dong_ve_1_ngay values("VD1905202100002",2,"B001","BT00001","BT00001",'133000','134541');
-insert into Hoat_dong_ve_1_ngay values("VD1905202100002",3,"B001","BT00001","BT00001",'173000','184541');
-
-#--------------------------------------------------------------------------------
-
-insert into Hanh_khach values("KH000001","233316009","Sinh vien","0355665365",'M',"luan.le912@hcmut.edu.vn",'2001-12-9');
-insert into Hanh_khach values("KH000002","233316008","Sinh vien","0355665366",'F',"na.le812@hcmut.edu.vn",'2001-12-8');
-insert into Hanh_khach values("KH000003","233316007","Sinh vien","0355665367",'M',"cuong.le712@hcmut.edu.vn",'2001-12-7');
-insert into Hanh_khach values("KH000004","233316006","Sinh vien","0355665368",'F',"toan.le612@hcmut.edu.vn",'2001-12-6');
-insert into Hanh_khach values("KH000005","233316005","Sinh vien","0355665369",'M',"phong.le512@hcmut.edu.vn",'2001-12-5');
-
-#--------------------------------------------------------------------------------
-
+#---------------------------------------------
+insert into tuyentaudien
+	values("A","DANGHUNGCUONG","T001");
+insert into tuyentaudien
+	values("B","TOTHANHPHONG","T002");
+insert into tuyentaudien
+	values("C","VOMINHTOAN","T003");
+insert into tuyentaudien
+	values("D","LEDINHLUAN","T004");
+insert into tuyentaudien
+	values("E","VOTHINA","T005");
+    
+#--------------------------------------------
+insert into chuyentauxe
+	values("B001",1);
+insert into chuyentauxe
+	values("B002",2);
+insert into chuyentauxe
+	values("B003",3);
+insert into chuyentauxe
+	values("T001",1);
+insert into chuyentauxe
+	values("T002",2);
+#---------------------
+insert into ghega_tram
+	values("B001",1,"BT00001",2,"8:10");
+insert into ghega_tram
+	values("B002",2,"BT00002",3,"6:07");
+insert into ghega_tram
+	values("B003",3,"TT00001",5,"10:12");
+insert into ghega_tram
+	values("T001",1,"TT00002",6,"22:20");
+insert into ghega_tram
+	values("T002",2,"TT00003",8,"14:10");
+#------------------------
+insert into hanh_khach
+	values("KH000001",111111111,"Sinh vien",1111111111,"M","aaaaaaemail","20010101");
+insert into hanh_khach
+	values("KH000002",222222222,"Sinh vien",2222222222,"M","bbbbbbemail","20000101");
+insert into hanh_khach
+	values("KH000003",333333333,"Sinh vien",3333333333,"F","ccccccemail","19990101");
+insert into hanh_khach
+	values("KH000004",444444444,"Sinh vien",4444444444,"F","ddddddemail","19980101");
+insert into hanh_khach
+	values("KH000005",555555555,"Sinh vien",5555555555,"M","eeeeeeemail","19970101");
+#------------------------
+insert ve
+	values("VO0106202111111",0,10000,"2021-01-01 06:5:6","KH000001");
+insert ve
+	values("VO0106202122222",0,9000,"2021-02-02 7:5:6","KH000002");
+insert ve
+	values("VO0106202133333",0,3000,"2021-03-03 10:22:11","KH000003");
+insert ve
+	values("VO0106202144444",0,5000,"2021-04-04 8:9:10","KH000004");
+insert ve
+	values("VO0106202155555",0,6000,"2021-05-05 20:20:20","KH000005");
+--
+insert ve
+	values("VD0106202111111",2,10000,"2021-01-01 06:5:6","KH000001");
+insert ve
+	values("VD0106202122222",2,9000,"2021-02-02 7:5:6","KH000001");
+insert ve
+	values("VD0106202133333",2,3000,"2021-03-03 10:22:11","KH000003");
+insert ve
+	values("VD0106202144444",2,5000,"2021-04-04 8:9:10","KH000003");
+insert ve
+	values("VD0106202155555",2,6000,"2021-05-05 20:20:20","KH000005");
+--
+insert ve
+	values("VM0106202111111",1,10000,"2021-01-01 06:5:6","KH000001");
+insert ve
+	values("VM0106202100002",1,8000,"2021-02-02 7:5:6","KH000001");
+insert ve
+	values("VM0106202100003",1,3000,"2021-03-03 10:22:11","KH000003");
+insert ve
+	values("VM0106202100004",1,5000,"2021-04-04 8:9:10","KH000005");
+insert ve
+	values("VM0106202100005",1,6000,"2021-05-05 20:20:20","KH000005");
+#-------------------------------
+insert ve_le
+	values("VO0106202111111","B001","2021-02-02","BT00001","06:06:06","BT00002","07:07:07");
+insert ve_le
+	values("VO0106202122222","B005","2021-03-03","BT00002","07:07:07","BT00001","08:08:08");
+insert ve_le
+	values("VO0106202133333","T001","2021-04-04","TT00001","08:08:08","TT00002","09:09:09");
+insert ve_le
+	values("VO0106202144444","T002","2021-05-05","TT00002","09:09:09","TT00003","10:10:10");
+insert ve_le
+	values("VO0106202155555","T003","2021-06-06","TT00003","10:10:10","TT00001","11:11:11");
+#--------------------------------
+insert ve_thang
+	values("VM0106202111111","B001","BT00001","BT00002");
+insert ve_thang
+	values("VM0106202100002","B002","BT00002","BT00001");
+insert ve_thang
+	values("VM0106202100003","T001","TT00001","TT00002");
+insert ve_thang
+	values("VM0106202100004","T002","TT00002","TT00003");
+insert ve_thang
+	values("VM0106202100005","T003","TT00003","TT00001");
+#------------------------------
+insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-18','123000','124541',"BT00001","BT00002");
+insert into Hoat_dong_ve_thang values ("VM0106202100002",'2021-05-19','073021','084241',"BT00002","BT00001");
+insert into Hoat_dong_ve_thang values ("VM0106202100003",'2021-05-20','082521','104241',"TT00001","TT00002");
+insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-21','062121','074241',"TT00002","TT00003");
+insert into Hoat_dong_ve_thang values ("VM0106202100005",'2021-05-22','122121','144241',"TT00003","TT00001");
+#-------------------------------
+insert ve_1_ngay
+	values("VD0106202111111","2021-02-02");
+insert ve_1_ngay
+	values("VD0106202122222","2021-03-03");
+insert ve_1_ngay
+	values("VD0106202133333","2021-04-04");
+insert ve_1_ngay
+	values("VD0106202144444","2021-05-05");
+insert ve_1_ngay
+	values("VD0106202155555","2021-06-06");
+#-----------------------------------
+insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'123000','124541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202122222",2,"B002","BT00002","BT00001",'125000','134541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202133333",1,"T001","TT00001","TT00002",'123000','124541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202144444",2,"T002","TT00002","TT00003",'133000','134541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202155555",3,"T003","TT00003","TT00001",'173000','184541');
+#------------------------------------
 insert into the_tu values("TT000001",'2020-05-22','KH000001');
 insert into the_tu values("TT000002",'2020-05-23','KH000002');
 insert into the_tu values("TT000003",'2020-05-25','KH000003');
 insert into the_tu values("TT000004",'2020-06-22','KH000003');
 insert into the_tu values("TT000005",'2021-01-12','KH000005');
-#----------------------------------------------------------------------------------------------------------------#
+
+#-------------------------------------
+insert into nv
+	values("NV0001","Lam cong","2001-06-07","aaaaaaemail","M",1111111111, NULL);
+insert into nv
+	values("NV0002","Lam cong","1999-02-26"," bbbbbbemail","M",NULL,NULL);
+insert into nv
+	values("NV0003","Sinh vien","1998-06-09","ccccccemail","F",NULL,NULL);
+insert into nv
+	values("NV0004","Lam cong","1998-05-26","mmmmmmemail","F",NULL,NULL);
+insert into nv
+	values("NV0005","Lam cong","1997-05-05","nnnnnnemail","F",1269845711,NULL);
+#------------------------------------
+insert into ga_tramlv
+	values("NV0001","BT00001");
+insert into ga_tramlv
+	values("NV0002","BT00002");
+insert into ga_tramlv
+	values("NV0003","TT00001");
+insert into ga_tramlv
+	values("NV0004","TT00002");
+insert into ga_tramlv
+	values("NV0005","TT00003");
+
+
+
+#--------------------------------------------------------------------------------

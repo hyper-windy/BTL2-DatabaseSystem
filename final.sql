@@ -1,4 +1,4 @@
- drop SCHEMA btl;
+ drop SCHEMA IF EXISTS btl;
 
 create schema btl;
 use	btl;
@@ -454,8 +454,17 @@ BEGIN
 		drop table Bang;
         
 END; $$
-DELIMITER ;ThongKeLuotNguoi
-#CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE ThongTinHanhKhach()
+BEGIN
+	SELECT * FROM Hanh_khach;
+END; $$
+DELIMITER ;
+
+use btl;
+CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
 #-------------------------------------------------------------------------------------#
 
 #-------------------------------------------------------- [INSERT] ----------------------------------------------#

@@ -1,5 +1,4 @@
- drop SCHEMA IF EXISTS btl;
-
+drop SCHEMA IF EXISTS btl;
 create schema btl;
 use	btl;
 
@@ -203,6 +202,7 @@ CREATE TABLE gheGa_Tram (
     MaGT CHAR(7),
     STT_dung INT UNSIGNED NOT NULL,
     Gio_ghe TIME NOT NULL,
+	Gio_di TIME NOT NULL,
     PRIMARY KEY (Ma_tuyen , stt , MaGT)
 );
     
@@ -447,12 +447,10 @@ BEGIN
 		SET i=i+1;
         
 	END WHILE;
-    
      	SELECT *
         From Bang
 		ORDER BY STR_TO_DATE(Ngay,'%d/%m/%Y');
 		drop table Bang;
-        
 END; $$
 DELIMITER ;
 
@@ -464,63 +462,35 @@ END; $$
 DELIMITER ;
 
 use btl;
-CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
+#CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
 
-
-
-
+#-------------------------------------------------------------------------------------#
 DELIMITER $$
-CREATE FUNCTION ThemTauXeGheGaTram(
-	Ma_tuyen CHAR(4),
-    stt INT UNSIGNED,
-    MaGT CHAR(7),
-    STT_dung INT UNSIGNED,
-    Gio_ghe TIME , Gio_di TIME 
+CREATE PROCEDURE ThemTauXeGheGaTram(
+	In Ma_tuyen CHAR(4),
+    In stt INT UNSIGNED,
+    In MaGT CHAR(7),
+    In STT_dung INT UNSIGNED,
+    In Gio_ghe TIME , In Gio_di TIME 
 ) 
-RETURNS INT
-DETERMINISTIC
 BEGIN
-    insert into gheGa_Tram values(Ma_tuyen, stt, MaGT, STT_dung, Gio_ghe, Gio_di);
-    if Gio_di = NULL THEN RETURN (0);
-    END IF;
-	RETURN (1);
-END$$
+	insert into gheGa_Tram values(Ma_tuyen, stt, MaGT, STT_dung, Gio_ghe, Gio_di);
+END; $$
 DELIMITER ;
-
 
 DELIMITER $$
 CREATE PROCEDURE ThemTuyenXe(IN ma_tuyen CHAR(4), IN _no INT)
 BEGIN
-    DECLARE cuoi 			INT DEFAULT 1;
-
 	insert into TUYENTAU_XE values(ma_tuyen);
     insert into TUYENXEBUS values(_no,ma_tuyen);
-	WHILE (Cuoi = 1) DO
-		SET Cuoi = ThemTauXeGheGaTram();
-	END WHILE;
-    
 END; $$
 DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE ThemTuyenTau(IN ma_tuyen CHAR(4), IN ten_tuyen_tau VARCHAR(100) ,IN ma_tuyen_tau CHAR(4))
 BEGIN
-    DECLARE Cuoi 			INT DEFAULT 1;
-
 	insert into TUYENTAU_XE values(ma_tuyen);
     insert into TUYENTAUDIEN values(ma_tuyen_tau, ten_tuyen_tau, ma_tuyen);
-	WHILE (Cuoi = 1) DO
-		SET Cuoi = ThemTauXeGheGaTram();
-	END WHILE;
-END; $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE PROCEDURE ThemTuyenTauXe(IN ma_tuyen CHAR(4))
-BEGIN
-    IF ma_tuyen like "B___" THEN CALL ThemTuyenXe();
-    ELSE CALL ThemTuyenTau();
-    END IF;
 END; $$
 DELIMITER ;
 
@@ -630,15 +600,15 @@ insert into chuyentauxe
 	values("T002",2);
 #---------------------
 insert into ghega_tram
-	values("B001",1,"BT00001",2,"8:10");
+	values("B001",1,"BT00001",2,"8:10","8:20" );
 insert into ghega_tram
-	values("B002",2,"BT00002",3,"6:07");
+	values("B002",2,"BT00002",3,"6:07", "6:17");
 insert into ghega_tram
-	values("B003",3,"TT00001",5,"10:12");
+	values("B003",3,"TT00001",5,"10:12", "10:22");
 insert into ghega_tram
-	values("T001",1,"TT00002",6,"22:20");
+	values("T001",1,"TT00002",6,"22:20", "22:30");
 insert into ghega_tram
-	values("T002",2,"TT00003",8,"14:10");
+	values("T002",2,"TT00003",8,"14:10","14:20");
 #------------------------
 insert into hanh_khach
 	values("KH000001",111111111,"Sinh vien",1111111111,"M","aaaaaaemail","20010101");
@@ -734,7 +704,6 @@ insert into the_tu values("TT000002",'2020-05-23','KH000002');
 insert into the_tu values("TT000003",'2020-05-25','KH000003');
 insert into the_tu values("TT000004",'2020-06-22','KH000003');
 insert into the_tu values("TT000005",'2021-01-12','KH000005');
-
 #-------------------------------------
 insert into nv
 	values("NV0001","Lam cong","2001-06-07","aaaaaaemail","M",1111111111, NULL);
@@ -757,9 +726,6 @@ insert into ga_tramlv
 	values("NV0004","TT00002");
 insert into ga_tramlv
 	values("NV0005","TT00003");
-
 #--------------------------------------------------------------------------------
 insert into bang_ve values('giave',3.000,10.000,12.000);
-
 #--------------------------------------------------------------------------------
-

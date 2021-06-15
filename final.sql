@@ -56,6 +56,7 @@ CREATE TABLE TUYENXEBUS (
 CREATE TABLE TUYENTAUDIEN (
 	ma_tuyen_tau 		CHAR 	PRIMARY KEY,
     ten_tuyen_tau 		VARCHAR(100) 	UNIQUE NOT NULL,
+	don_gia			DECIMAL(10,3),
 	ma_tuyen_tau_xe 	CHAR(4)		NOT NULL,
     CONSTRAINT _t
 		CHECK(SUBSTRING(ma_tuyen_tau_xe,1,1) = 'T'),
@@ -479,18 +480,18 @@ END; $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE ThemTuyenXe(IN ma_tuyen CHAR(4), IN _no INT)
+CREATE PROCEDURE ThemTuyenXe(IN ma_tuyen CHAR(4))
 BEGIN
 	insert into TUYENTAU_XE values(ma_tuyen);
-    insert into TUYENXEBUS values(_no,ma_tuyen);
+    insert into TUYENXEBUS values(null, ma_tuyen);
 END; $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE ThemTuyenTau(IN ma_tuyen CHAR(4), IN ten_tuyen_tau VARCHAR(100) ,IN ma_tuyen_tau CHAR(4))
+CREATE PROCEDURE ThemTuyenTau( IN ma_tuyen_tau CHAR, IN ten_tuyen_tau VARCHAR(100), IN don_gia DECIMAL(10,3), IN ma_tuyen CHAR(4))
 BEGIN
 	insert into TUYENTAU_XE values(ma_tuyen);
-    insert into TUYENTAUDIEN values(ma_tuyen_tau, ten_tuyen_tau, ma_tuyen);
+    insert into TUYENTAUDIEN values(ma_tuyen_tau, ten_tuyen_tau, don_gia, ma_tuyen);
 END; $$
 DELIMITER ;
 

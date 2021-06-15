@@ -465,6 +465,65 @@ DELIMITER ;
 
 use btl;
 CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
+
+
+
+
+DELIMITER $$
+CREATE FUNCTION ThemTauXeGheGaTram(
+	Ma_tuyen CHAR(4),
+    stt INT UNSIGNED,
+    MaGT CHAR(7),
+    STT_dung INT UNSIGNED,
+    Gio_ghe TIME , Gio_di TIME 
+) 
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    insert into gheGa_Tram values(Ma_tuyen, stt, MaGT, STT_dung, Gio_ghe, Gio_di);
+    if Gio_di = NULL THEN RETURN (0);
+    END IF;
+	RETURN (1);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE ThemTuyenXe(IN ma_tuyen CHAR(4), IN _no INT)
+BEGIN
+    DECLARE cuoi 			INT DEFAULT 1;
+
+	insert into TUYENTAU_XE values(ma_tuyen);
+    insert into TUYENXEBUS values(_no,ma_tuyen);
+	WHILE (Cuoi = 1) DO
+		SET Cuoi = ThemTauXeGheGaTram();
+	END WHILE;
+    
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE ThemTuyenTau(IN ma_tuyen CHAR(4), IN ten_tuyen_tau VARCHAR(100) ,IN ma_tuyen_tau CHAR(4))
+BEGIN
+    DECLARE Cuoi 			INT DEFAULT 1;
+
+	insert into TUYENTAU_XE values(ma_tuyen);
+    insert into TUYENTAUDIEN values(ma_tuyen_tau, ten_tuyen_tau, ma_tuyen);
+	WHILE (Cuoi = 1) DO
+		SET Cuoi = ThemTauXeGheGaTram();
+	END WHILE;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE ThemTuyenTauXe(IN ma_tuyen CHAR(4))
+BEGIN
+    IF ma_tuyen like "B___" THEN CALL ThemTuyenXe();
+    ELSE CALL ThemTuyenTau();
+    END IF;
+END; $$
+DELIMITER ;
+
 #-------------------------------------------------------------------------------------#
 
 #-------------------------------------------------------- [INSERT] ----------------------------------------------#

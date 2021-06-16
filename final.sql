@@ -5,6 +5,12 @@ create schema btl;
 use	btl;
 
 #------------------- [CUONG]---------------------#
+CREATE TABLE GL(
+     _no INT AUTO_INCREMENT PRIMARY KEY);
+     
+CREATE TABLE CD(
+     _no INT AUTO_INCREMENT PRIMARY KEY);
+     
 CREATE TABLE GIAOLO(
      _Ma_giao_lo VARCHAR(8)		PRIMARY KEY,
      _long 		DECIMAL(10,7)		NOT NULL,
@@ -305,24 +311,10 @@ CREATE TRIGGER before_GIAOLO_insert
 BEFORE INSERT
 ON GIAOLO FOR EACH ROW
 BEGIN
-    DECLARE Tong 	INT;
-    DECLARE Tong1 	INT;
-	SELECT COUNT(*) AS Tong INTO Tong
-	FROM GIAOLO;
-    IF Tong = 0 THEN
-	SET NEW._Ma_giao_lo = CONCAT("GL",Tong + 1);
-        
-    ELSE
-    #---------------------
-	SELECT    CAST(SUBSTR(_Ma_giao_lo,3,LENGTH(_Ma_giao_lo) - 2) as signed) 
-        FROM GIAOLO 
-        ORDER BY  cast(substr(_Ma_giao_lo,3,LENGTH(_Ma_giao_lo) - 2) as signed) DESC 
-        LIMIT 1 
-        INTO Tong1;
-	#---------------------
-    
-        SET NEW._Ma_giao_lo = CONCAT("GL",Tong1 + 1);
-	END IF;
+	declare maxi int;
+     	insert into GL value (NULL);
+     	select max(_no) from GL into maxi;
+	SET NEW._Ma_giao_lo = CONCAT("GL",maxi);
 END $$
 DELIMITER ;
 
@@ -333,24 +325,11 @@ CREATE TRIGGER before_CONDUONG_insert
 BEFORE INSERT
 ON CONDUONG FOR EACH ROW
 BEGIN
-    DECLARE Tong 	INT;
-    DECLARE Tong1 	INT;
-    SELECT COUNT(*) AS Tong INTO Tong
-    FROM CONDUONG ;
-    IF Tong = 0 THEN
-		SET NEW._Ma_con_duong = CONCAT("CD",Tong + 1);
-        
-    ELSE
-    #-----------------------
-	SELECT    cast(substr(_Ma_con_duong,3,LENGTH(_Ma_con_duong) - 2) as signed) 
-        FROM CONDUONG 
-        ORDER BY  cast(substr(_Ma_con_duong,3,LENGTH(_Ma_con_duong) - 2) as signed) DESC
-        LIMIT 1 
-        INTO Tong1;
-	#-------------------------
-    
-		SET NEW._Ma_con_duong = CONCAT("CD",Tong1 + 1);
-	END IF;
+    BEGIN
+	declare maxi int;
+      	insert into CD value (NULL);
+      	select max(_no) from CD into maxi;
+	SET NEW._Ma_con_duong = CONCAT("CD",maxi);
 END $$
 DELIMITER ;
 #---------------------------------------#

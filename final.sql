@@ -325,7 +325,6 @@ CREATE TRIGGER before_CONDUONG_insert
 BEFORE INSERT
 ON CONDUONG FOR EACH ROW
 BEGIN
-    BEGIN
 	declare maxi int;
       	insert into CD value (NULL);
       	select max(_no) from CD into maxi;
@@ -341,11 +340,16 @@ BEFORE INSERT
 ON tuyentaudien FOR EACH ROW
 BEGIN
 	DECLARE don_gia_bus DECIMAL(10, 3);
-    SET don_gia_bus = (SELECT bus FROM Bang_ve);
     
-    IF NEW.don_gia <= don_gia_bus
-    THEN signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia tau dien phai lon hon don gia bus';
-    END IF;
+	DECLARE cntDonGiaBus INT;
+    SELECT Count(*) FROM Bang_ve INTO cntDonGiaBus;
+    
+    IF cntDonGiaBus = 1 THEN 
+		SET don_gia_bus = (SELECT bus FROM Bang_ve);
+		IF NEW.don_gia <= don_gia_bus THEN 
+			signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia tau dien phai lon hon don gia bus';
+		END IF;
+	END IF;
 END $$
 DELIMITER ;
 #-----------------------------------------------------------#
@@ -380,6 +384,12 @@ BEGIN
     SELECT COUNT(*) FROM Bang_ve INTO N;
     IF N=1 THEN signal sqlstate '45000' set message_text = 'Da co gia ve roi ban nen update';
     END IF;
+    
+    SELECT COUNT(*) FROM TUYENTAUDIEN INTO N;
+    IF N <> 0 AND NEW.bus >= (SELECT min(don_gia) FROM TUYENTAUDIEN) THEN
+		signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia bus phai nho hon don gia tau dien';
+	END IF;
+    
 	UPDATE VE
     SET Gia_ve=NEW.bus WHERE Loai_ve=0;
     
@@ -400,6 +410,9 @@ CREATE TRIGGER cap_nhat_gia_ve
 BEFORE UPDATE ON Bang_ve
 FOR EACH ROW
 BEGIN
+	IF NEW.bus >= (SELECT min(don_gia) FROM TUYENTAUDIEN)
+    THEN signal sqlstate '45000' set message_text = 'Khong the update duoc vi don gia bus phai nho hon don gia tau dien';
+    END IF;
 	UPDATE VE
     SET Gia_ve=NEW.bus WHERE Loai_ve=0;
     
@@ -519,12 +532,6 @@ DELIMITER ;
 #-------------------------------------------------------------------------------------#
 
 #-------------------------------------------------------- [INSERT] ----------------------------------------------#
-#--------------------------------------------------------------------------------
-
-insert into bang_ve values('giave',3.000,10.000,12.000);
-
-#--------------------------------------------------------------------------------
-
 insert into GIAOLO (_long, _lat) values(1,1);
 insert into GIAOLO (_long, _lat) values(1,2);
 insert into GIAOLO (_long, _lat) values(1,3);
@@ -782,4 +789,8 @@ insert into ga_tramlv
 insert into ga_tramlv
 	values("NV0005","TT00003");
 
-#-------------------------------------------
+#--------------------------------------------------------------------------------
+
+insert into bang_ve values('giave',3.000,10.000,12.000);
+
+#--------------------------------------------------------------------------------

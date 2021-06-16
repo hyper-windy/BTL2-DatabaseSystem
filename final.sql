@@ -1,4 +1,6 @@
-drop SCHEMA IF EXISTS btl;
+
+-- set SQL_SAFE_UPDATES = 0;
+-- drop SCHEMA IF EXISTS btl;
 create schema btl;
 use	btl;
 
@@ -622,59 +624,59 @@ insert into hanh_khach
 insert into hanh_khach
 	values("KH000005",555555555,"Sinh vien",5555555555,"M","eeeeeeemail","19970101");
 #------------------------
-insert ve
+insert into ve
 	values("VO0106202111111",0,10000,"2021-01-01 06:5:6","KH000001");
-insert ve
+insert into ve
 	values("VO0106202122222",0,9000,"2021-02-02 7:5:6","KH000002");
-insert ve
+insert into ve
 	values("VO0106202133333",0,3000,"2021-03-03 10:22:11","KH000003");
-insert ve
+insert into ve
 	values("VO0106202144444",0,5000,"2021-04-04 8:9:10","KH000004");
-insert ve
+insert into ve
 	values("VO0106202155555",0,6000,"2021-05-05 20:20:20","KH000005");
 --
-insert ve
+insert into ve
 	values("VD0106202111111",2,10000,"2021-01-01 06:5:6","KH000001");
-insert ve
+insert into ve
 	values("VD0106202122222",2,9000,"2021-02-02 7:5:6","KH000001");
-insert ve
+insert into ve
 	values("VD0106202133333",2,3000,"2021-03-03 10:22:11","KH000003");
-insert ve
+insert into ve
 	values("VD0106202144444",2,5000,"2021-04-04 8:9:10","KH000003");
-insert ve
+insert into ve
 	values("VD0106202155555",2,6000,"2021-05-05 20:20:20","KH000005");
 --
-insert ve
+insert into ve
 	values("VM0106202111111",1,10000,"2021-01-01 06:5:6","KH000001");
-insert ve
+insert into ve
 	values("VM0106202100002",1,8000,"2021-02-02 7:5:6","KH000001");
-insert ve
+insert into ve
 	values("VM0106202100003",1,3000,"2021-03-03 10:22:11","KH000003");
-insert ve
+insert into ve
 	values("VM0106202100004",1,5000,"2021-04-04 8:9:10","KH000005");
-insert ve
+insert into ve
 	values("VM0106202100005",1,6000,"2021-05-05 20:20:20","KH000005");
 #-------------------------------
-insert ve_le
+insert into ve_le
 	values("VO0106202111111","B001","2021-02-02","BT00001","06:06:06","BT00002","07:07:07");
-insert ve_le
+insert into ve_le
 	values("VO0106202122222","B005","2021-03-03","BT00002","07:07:07","BT00001","08:08:08");
-insert ve_le
+insert into ve_le
 	values("VO0106202133333","T001","2021-04-04","TT00001","08:08:08","TT00002","09:09:09");
-insert ve_le
+insert into ve_le
 	values("VO0106202144444","T002","2021-05-05","TT00002","09:09:09","TT00003","10:10:10");
-insert ve_le
+insert into ve_le
 	values("VO0106202155555","T003","2021-06-06","TT00003","10:10:10","TT00001","11:11:11");
 #--------------------------------
-insert ve_thang
+insert into ve_thang
 	values("VM0106202111111","B001","BT00001","BT00002");
-insert ve_thang
+insert into ve_thang
 	values("VM0106202100002","B002","BT00002","BT00001");
-insert ve_thang
+insert into ve_thang
 	values("VM0106202100003","T001","TT00001","TT00002");
-insert ve_thang
+insert into ve_thang
 	values("VM0106202100004","T002","TT00002","TT00003");
-insert ve_thang
+insert into ve_thang
 	values("VM0106202100005","T003","TT00003","TT00001");
 #------------------------------
 insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-18','123000','124541',"BT00001","BT00002");
@@ -683,15 +685,15 @@ insert into Hoat_dong_ve_thang values ("VM0106202100003",'2021-05-20','082521','
 insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-21','062121','074241',"TT00002","TT00003");
 insert into Hoat_dong_ve_thang values ("VM0106202100005",'2021-05-22','122121','144241',"TT00003","TT00001");
 #-------------------------------
-insert ve_1_ngay
+insert into ve_1_ngay
 	values("VD0106202111111","2021-02-02");
-insert ve_1_ngay
+insert into ve_1_ngay
 	values("VD0106202122222","2021-03-03");
-insert ve_1_ngay
+insert into ve_1_ngay
 	values("VD0106202133333","2021-04-04");
-insert ve_1_ngay
+insert into ve_1_ngay
 	values("VD0106202144444","2021-05-05");
-insert ve_1_ngay
+insert into ve_1_ngay
 	values("VD0106202155555","2021-06-06");
 #-----------------------------------
 insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'123000','124541');

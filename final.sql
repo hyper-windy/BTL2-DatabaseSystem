@@ -372,8 +372,32 @@ DELIMITER ;
 #-----------------------TRIGGER 2------------------------------------------------
 
 DELIMITER $$
-CREATE TRIGGER cap_nhat_gia_ve
+CREATE TRIGGER them_gia_ve
 BEFORE INSERT ON Bang_ve
+FOR EACH ROW
+BEGIN
+	DECLARE N INT;
+    SELECT COUNT(*) FROM Bang_ve INTO N;
+    IF N=1 THEN signal sqlstate '45000' set message_text = 'Da co gia ve roi ban nen update';
+    END IF;
+	UPDATE VE
+    SET Gia_ve=NEW.bus WHERE Loai_ve=0;
+    
+    UPDATE VE
+    SET Gia_ve=NEW.ve_1_ngay WHERE Loai_ve=1 
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Saturday' 
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Sunday';
+    
+    UPDATE VE
+    SET Gia_ve=NEW.cuoi_tuan WHERE Loai_ve=1
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday';
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER cap_nhat_gia_ve
+BEFORE UPDATE ON Bang_ve
 FOR EACH ROW
 BEGIN
 	UPDATE VE
@@ -386,8 +410,8 @@ BEGIN
     
     UPDATE VE
     SET Gia_ve=NEW.cuoi_tuan WHERE Loai_ve=1
-    AND (DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
-    OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday';
 END $$
 DELIMITER ;
 #------------------------------------------------#

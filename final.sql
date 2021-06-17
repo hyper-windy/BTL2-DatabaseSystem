@@ -296,6 +296,8 @@ ALTER TABLE VE_1_NGAY
 #-------------------- [PHONG] --------------------#
 ALTER TABLE gheGa_Tram
 	ADD CONSTRAINT _gheGa_tram1 FOREIGN KEY gheGa_Tram(Ma_tuyen,stt) REFERENCES CHUYENTAUXE(ma_tuyen,stt);
+ALTER TABLE gheGa_Tram
+	ADD CONSTRAINT _gheGa_tram2 FOREIGN KEY gheGa_Tram(MaGT) REFERENCES GA_TRAM(_Ma_ga_tram);
     
 ALTER TABLE Ga_TramLV
 	ADD CONSTRAINT _fkey1 FOREIGN KEY (MaNV) REFERENCES NV(MaNV);

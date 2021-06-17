@@ -1,4 +1,3 @@
-
 -- set SQL_SAFE_UPDATES = 0;
 -- drop SCHEMA IF EXISTS btl;
 create schema btl;
@@ -50,7 +49,9 @@ CREATE TABLE TUYENTAU_XE (
 	ma_tuyen	CHAR(4)		PRIMARY KEY,
     CONSTRAINT 	_checktuyentau_xe
 		CHECK 	(ma_tuyen like '____'),
+	 CONSTRAINT 	_checktuyentau_xe2
 		CHECK	(SUBSTRING(ma_tuyen,1,1) = 'B' or SUBSTRING(ma_tuyen,1,1) = 'T'),
+	CONSTRAINT 	_checktuyentau_xe3
 		CHECK	(CAST(SUBSTRING(ma_tuyen,2,3) as SIGNED) >= 0 and CAST(SUBSTRING(ma_tuyen,2,3) as SIGNED) <= 999)
 );
 
@@ -212,7 +213,8 @@ CREATE TABLE gheGa_Tram (
     STT_dung INT UNSIGNED NOT NULL,
     Gio_ghe TIME NOT NULL,
 	Gio_di TIME NOT NULL,
-    PRIMARY KEY (Ma_tuyen , stt , MaGT)
+    PRIMARY KEY (Ma_tuyen , stt , MaGT),
+    CHECK (Gio_ghe < Gio_di)
 );
     
 CREATE TABLE NV (
@@ -511,7 +513,13 @@ CREATE PROCEDURE ThemTauXeGheGaTram(
     In Gio_ghe TIME , In Gio_di TIME 
 ) 
 BEGIN
-	insert into chuyentauxe values(Ma_tuyen, stt);
+	IF NOT EXISTS (SELECT * FROM GA_TRAM WHERE _Ma_ga_tram = MaGT) THEN
+		signal sqlstate '45000' set message_text = 'Khong ton tai ma ga tram';
+	END IF;
+    IF Gio_ghe >= Gio_di THEN
+		signal sqlstate '45000' set message_text = 'Gio ghe phai nho hon gio di';
+	END IF;
+    insert into chuyentauxe values(Ma_tuyen, stt);
 	insert into gheGa_Tram values(Ma_tuyen, stt, MaGT, STT_dung, Gio_ghe, Gio_di);
 END; $$
 DELIMITER ;
@@ -527,6 +535,23 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ThemTuyenTau( IN ma_tuyen_tau CHAR, IN ten_tuyen_tau VARCHAR(100), IN don_gia DECIMAL(10,3), IN ma_tuyen CHAR(4))
 BEGIN
+	DECLARE don_gia_bus DECIMAL(10, 3);
+	DECLARE cntDonGiaBus INT;
+    
+	IF ma_tuyen_tau <> UPPER(ma_tuyen_tau) THEN
+		signal sqlstate '45000' set message_text = 'Ma tuyen tau phai la mot chu in hoa';
+	END IF;
+    
+	
+    SELECT Count(*) FROM Bang_ve INTO cntDonGiaBus;
+    
+    IF cntDonGiaBus = 1 THEN 
+		SET don_gia_bus = (SELECT bus FROM Bang_ve);
+		IF don_gia <= don_gia_bus THEN 
+			signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia tau dien phai lon hon don gia bus';
+		END IF;
+	END IF;
+    
 	insert into TUYENTAU_XE values(ma_tuyen);
     insert into TUYENTAUDIEN values(ma_tuyen_tau, ten_tuyen_tau, don_gia, ma_tuyen);
 END; $$
@@ -797,3 +822,8 @@ insert into ga_tramlv
 insert into bang_ve values('giave',3.000,10.000,12.000);
 
 #--------------------------------------------------------------------------------
+
+#-------------------------------------------------- [ADD USER] ---------------------------------------------------#
+CREATE USER 'sManager'@'localhost' IDENTIFIED BY '1';
+GRANT SELECT, INSERT, DELETE, UPDATE, EXECUTE ON btl.* TO  'sManager'@'localhost';
+#-----------------------------------------------------------------------------------------------------------------#

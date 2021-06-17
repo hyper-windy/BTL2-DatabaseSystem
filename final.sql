@@ -400,8 +400,8 @@ BEGIN
     
     UPDATE VE
     SET Gia_ve=NEW.cuoi_tuan WHERE Loai_ve=1
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday';
+    AND (DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
+    OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
 END $$
 DELIMITER ;
 
@@ -423,8 +423,8 @@ BEGIN
     
     UPDATE VE
     SET Gia_ve=NEW.cuoi_tuan WHERE Loai_ve=1
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday';
+    AND (DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
+    OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
 END $$
 DELIMITER ;
 #------------------------------------------------#

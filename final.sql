@@ -509,6 +509,7 @@ CREATE PROCEDURE ThemTauXeGheGaTram(
     In Gio_ghe TIME , In Gio_di TIME 
 ) 
 BEGIN
+	insert into chuyentauxe values(Ma_tuyen, stt);
 	insert into gheGa_Tram values(Ma_tuyen, stt, MaGT, STT_dung, Gio_ghe, Gio_di);
 END; $$
 DELIMITER ;

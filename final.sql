@@ -369,13 +369,13 @@ CREATE TRIGGER check_ga_tram_len_xuong
 BEFORE INSERT
 ON Hoat_dong_ve_thang FOR EACH ROW
 	BEGIN
-    DECLARE Gatramlen CHAR(7);
-    DECLARE Gatramxuong CHAR(7);
+    DECLARE Gatram1 CHAR(7);
+    DECLARE Gatram2 CHAR(7);
     
-    SELECT Ma_ga_tram_1  INTO Gatramlen FROM Ve_thang WHERE Ma_ve=NEW.Ma_ve;
-	SELECT Ma_ga_tram_2  INTO Gatramxuong FROM Ve_thang WHERE Ma_ve=NEW.Ma_ve;
+    SELECT Ma_ga_tram_1  INTO Gatram1 FROM Ve_thang WHERE Ma_ve=NEW.Ma_ve;
+    SELECT Ma_ga_tram_2  INTO Gatram2 FROM Ve_thang WHERE Ma_ve=NEW.Ma_ve;
      
-    IF Gatramlen != NEW.Ga_tram_len OR Gatramxuong != NEW.Ga_tram_xuong
+    IF !((Gatram1 = NEW.Ga_tram_len AND Gatram2 = NEW.Ga_tram_xuong) OR (Gatram2 = NEW.Ga_tram_len AND Gatram1 = NEW.Ga_tram_xuong))
     THEN signal sqlstate '45000' set message_text = 'Khong the insert duoc vi ma ga tram khong trung khop';
     END IF;
     END $$

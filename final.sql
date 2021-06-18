@@ -425,8 +425,40 @@ BEGIN
     OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
 END $$
 DELIMITER ;
-
-
+----------------------------------
+DELIMITER $$
+CREATE TRIGGER cap_nhat_gia_ve_thang
+BEFORE INSERT ON Ve_thang
+FOR EACH ROW
+BEGIN
+	DECLARE STT1 INT;
+    DECLARE STT2 INT;
+    DECLARE Gia_ve_le DECIMAL(10,3) DEFAULT 0;
+    DECLARE Don_gia_ve DECIMAL(10,3) DEFAULT 0;
+    DECLARE Gia_ve_thang DECIMAL(10,3) DEFAULT 0;
+    DECLARE Nghe_nghiep CHAR(30);
+    
+	SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_len AND Ma_tuyen=NEW.Ma_tuyen INTO STT1;
+    SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_xuong AND Ma_tuyen=NEW.Ma_tuyen INTO STT2;
+    SELECT Nghe_nghiep FROM Hanh_khach,Ve WHERE NEW.Ma_ve=Ve.Ma_ve AND Ve.Ma_hanh_khach=Hanh_khach.Ma_hanh_khach INTO Nghe_nghiep;
+    
+    IF NEW.Ma_tuyen like "T___" THEN 
+    SELECT don_gia FROM tuyentaudien WHERE ma_tuyen_tau_xe = NEW.Ma_tuyen INTO Don_gia_ve;
+    ELSE 
+    SELECT bus FROM Bang_ve WHERE ID ="giave" INTO Don_gia_ve;
+    END IF;
+    SET Gia_ve_le = Don_gia_ve*((STT2-STT1+1) + (STT2-STT1+1)%2)/2;
+    SET Gia_ve_thang =Gia_ve_le*40;
+    IF Nghe_nghiep ="Sinh vien" OR Nghe_nghiep="Hoc sinh" THEN
+	SET Gia_ve_thang = Gia_ve_thang/2;
+    ELSEIF substring(Ma_ve,3,8)>curdate() THEN
+    SET Gia_ve_thang = Gia_ve_thang*0.9;
+    END IF;
+    UPDATE VE
+    SET Gia_ve= Gia_ve_thang WHERE Ma_ve = NEW.Ma_ve;
+END $$
+DELIMITER ;
+------------------------------------
 DELIMITER $$
 CREATE TRIGGER them_gia_ve
 BEFORE INSERT ON Bang_gia

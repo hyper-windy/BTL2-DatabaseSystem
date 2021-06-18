@@ -168,13 +168,12 @@ create table hoat_dong_ve_1_ngay(
 		CHECK(Gio_xuong > Gio_len),
 	CONSTRAINT fk14_Ma_ve
 		FOREIGN KEY (Ma_ve) REFERENCES Ve_1_ngay(Ma_ve),
+	CONSTRAINT fk14_Ma_tuyen
+		FOREIGN KEY (Ma_tuyen) REFERENCES tuyentau_xe(ma_tuyen),
 	CONSTRAINT fk14_Ga_tram_len
 		FOREIGN KEY (Ga_tram_len) REFERENCES Ga_tram(_Ma_ga_tram),
 	CONSTRAINT fk14_Ga_tram_xuong
 		FOREIGN KEY (Ga_tram_xuong) REFERENCES Ga_tram(_Ma_ga_tram)
-	CONSTRAINT fk14_Ma_tuyen
-		FOREIGN KEY (Ma_tuyen) REFERENCES Tuyentau_xe(Ma_tuyen)
-	
 );
 #--------------------------------------------------------------------------------
 
@@ -252,8 +251,6 @@ ALTER TABLE GA_TRAM
 	ADD 	CONSTRAINT _fkey_gatram1	FOREIGN KEY GA_TRAM (_Ma_giao_lo_1) REFERENCES DOANDUONG (_Ma_giao_lo_1);
 ALTER TABLE GA_TRAM
 	ADD 	CONSTRAINT _fkey_gatram2	FOREIGN KEY GA_TRAM (_Ma_giao_lo_2) REFERENCES DOANDUONG (_Ma_giao_lo_2);
-    
-
 #----------------------------------------#
 
 #----------------------- [TOAN] -----------------------#
@@ -381,6 +378,7 @@ ON Hoat_dong_ve_thang FOR EACH ROW
     END $$
 DELIMITER ;
 
+
 #-----------------------TRIGGER 2------------------------------------------------
 DELIMITER $$
 CREATE TRIGGER cap_nhat_gia_ve_le
@@ -451,8 +449,10 @@ BEGIN
     ELSE 
 		SELECT bus FROM Bang_gia WHERE ID ="giave" INTO Don_gia_ve;
     END IF;
+    
     SET Gia_ve_le = Don_gia_ve*((STT2-STT1+1) + (STT2-STT1+1)%2)/2;
     SET Gia_ve_thang =Gia_ve_le*40;
+    
     IF Nghe_nghiep ="Sinh vien" OR Nghe_nghiep="Hoc sinh" THEN
 		SET Gia_ve_thang = Gia_ve_thang/2;
     ELSEIF STR_TO_DATE(substring(NEW.Ma_ve,3,8),'%d%m%Y')>curdate() THEN
@@ -529,7 +529,8 @@ BEGIN
 		TongSoLuotNguoi	INT);
     
     	SET numberofDays = DATEDIFF(TDate, FDate);
-    	WHILE (i<=numberofDays) DO
+        
+	WHILE (i<=numberofDays) DO
 		SELECT COUNT(*) AS Tong1 INTO Tong1 
 		FROM VE_LE vl
         	WHERE vl.Ngay_su_dung = DATE_ADD(FDate, INTERVAL i DAY) AND vl.Ma_tuyen = matuyen;   
@@ -541,10 +542,11 @@ BEGIN
 		SELECT COUNT(*) AS Tong3 INTO Tong3 
 		FROM VE_1_NGAY vn, hoat_dong_ve_1_ngay hdvn
        		WHERE vn.Ma_ve = hdvn.Ma_ve AND vn.Ngay_su_dung = DATE_ADD(FDate, INTERVAL i DAY) AND hdvn.Ma_tuyen = matuyen;
+            
 		insert into Bang values (DATE_FORMAT(DATE_ADD(FDate, INTERVAL i DAY), '%d/%m/%Y'),Tong1+Tong2+Tong3);
 		SET i=i+1;
-        
 	END WHILE;
+    
      	SELECT *
         From Bang
 		ORDER BY STR_TO_DATE(Ngay,'%d/%m/%Y');
@@ -559,7 +561,6 @@ BEGIN
 END; $$
 DELIMITER ;
 
-use btl;
 #CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
 #-------------------------------------------------------------------------------------#
 DELIMITER $$

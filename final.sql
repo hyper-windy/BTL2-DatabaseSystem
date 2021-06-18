@@ -601,10 +601,10 @@ BEGIN
 		signal sqlstate '45000' set message_text = 'Ma tuyen tau phai la mot chu in hoa';
 	END IF;
 	
-    SELECT Count(*) FROM Bang_ve INTO cntDonGiaBus;
+    SELECT Count(*) FROM Bang_gia INTO cntDonGiaBus;
     
     IF cntDonGiaBus = 1 THEN 
-		SET don_gia_bus = (SELECT bus FROM Bang_ve);
+		SET don_gia_bus = (SELECT bus FROM Bang_gia);
 		IF don_gia <= don_gia_bus THEN 
 			signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia tau dien phai lon hon don gia bus';
 		END IF;
@@ -893,6 +893,6 @@ insert into ga_tramlv
 insert into ga_tramlv
 	values("NV0005","TT00003");
 #-------------------------------------------------- [ADD USER] ---------------------------------------------------#
-CREATE USER 'sManager'@'localhost' IDENTIFIED BY '1';
+CREATE USER 'sManager1'@'localhost' IDENTIFIED BY '1';
 GRANT SELECT, INSERT, DELETE, UPDATE, EXECUTE ON btl.* TO  'sManager'@'localhost';
 #-----------------------------------------------------------------------------------------------------------------#

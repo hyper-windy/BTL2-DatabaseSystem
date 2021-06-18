@@ -452,11 +452,11 @@ BEGIN
     SET Gia_ve_thang =Gia_ve_le*40;
     IF Nghe_nghiep ="Sinh vien" OR Nghe_nghiep="Hoc sinh" THEN
 		SET Gia_ve_thang = Gia_ve_thang/2;
-    ELSEIF substring(Ma_ve,3,8)>curdate() THEN
+    ELSEIF STR_TO_DATE(substring(NEW.Ma_ve,3,8),'%d%m%Y')>curdate() THEN
 		SET Gia_ve_thang = Gia_ve_thang*0.9;
     END IF;
     UPDATE VE
-    SET Gia_ve= Gia_ve_thang WHERE Ma_ve = NEW.Ma_ve;
+		SET Gia_ve= Gia_ve_thang WHERE Ma_ve = NEW.Ma_ve;
 END $$
 DELIMITER ;
 ----------------------------------------------------

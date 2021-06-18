@@ -497,7 +497,7 @@ CREATE PROCEDURE LoTrinhTuyenXeTau(IN ma_tuyen CHAR(4))
 BEGIN
 	SELECT _Ten
    	FROM ghega_tram ch, GA_TRAM gt
-   	WHERE gt._Ma_ga_tram = ch.MaGT AND ch.Ma_tuyen = ma_tuyen
+   	WHERE gt._Ma_ga_tram = ch.MaGT AND ch.Ma_tuyen = ma_tuyen AND ch.stt = 1
    	ORDER BY ch.STT_dung;
 END; $$
 DELIMITER ;
@@ -558,7 +558,6 @@ DELIMITER ;
 
 use btl;
 #CALL ThongKeLuotNguoi("T001","02/03/2021","20/05/2021");
-
 #-------------------------------------------------------------------------------------#
 DELIMITER $$
 CREATE PROCEDURE ThemTauXeGheGaTram(
@@ -827,7 +826,6 @@ insert into ve_1_ngay
 	values("VD0106202155555","2021-06-06");
     
 #-----------------------------------
-
 insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'6:15:00','6:45:00');
 insert into Hoat_dong_ve_1_ngay values("VD0106202111111",2,"B002","BT00002","BT00001",'8:07:03','9:23:10');
 insert into Hoat_dong_ve_1_ngay values("VD0106202111111",3,"T001","TT00001","TT00002",'12:23:00','12:52:02');
@@ -844,9 +842,7 @@ insert into ve
 	values("VM0106202100004",1,NULL,"2021-05-20 8:09:10","KH000005");
 insert into ve
 	values("VM0106202100005",1,NULL,"2021-05-05 20:20:20","KH000005");
-    
 #-------------------------------
-
 insert into ve_thang
 	values("VM0106202111111","B001","BT00001","BT00002");
 insert into ve_thang
@@ -857,27 +853,20 @@ insert into ve_thang
 	values("VM0106202100004","T002","TT00002","TT00003");
 insert into ve_thang
 	values("VM0106202100005","T002","TT00003","TT00001");
-    
 #------------------------------
-
 insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-18','6:15:10','6:45:20',"BT00001","BT00002");
 insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-19','6:45:00','7:25:00',"BT00001","BT00002");
 insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-20','6:13:15','6:47:21',"BT00001","BT00002");
 insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-21',"13:22:03","13:52:17","TT00002","TT00003");
 insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-22','14:25:52','14:52:25',"TT00002","TT00003");
-
 #-------------------------------
-
 #------------------------------------
-
 insert into the_tu values("TT000001",'2020-05-22','KH000001');
 insert into the_tu values("TT000002",'2020-05-23','KH000002');
 insert into the_tu values("TT000003",'2020-05-25','KH000003');
 insert into the_tu values("TT000004",'2020-06-22','KH000004');
 insert into the_tu values("TT000005",'2021-01-12','KH000005');
-
 #-------------------------------------
-
 insert into nv
 	values("NV0001","cong nhan","2001-06-07","aaaaaaemail","M",1111111111, NULL);
 insert into nv
@@ -888,9 +877,7 @@ insert into nv
 	values("NV0004","cong nhan","1998-05-26","mmmmmmemail","F",NULL,NULL);
 insert into nv
 	values("NV0005","cong nhan","1997-05-05","nnnnnnemail","F",1269845711,NULL);
-    
 #------------------------------------
-
 insert into ga_tramlv
 	values("NV0001","BT00001");
 insert into ga_tramlv
@@ -901,7 +888,6 @@ insert into ga_tramlv
 	values("NV0004","TT00002");
 insert into ga_tramlv
 	values("NV0005","TT00003");
-
 #-------------------------------------------------- [ADD USER] ---------------------------------------------------#
 CREATE USER 'sManager'@'localhost' IDENTIFIED BY '1';
 GRANT SELECT, INSERT, DELETE, UPDATE, EXECUTE ON btl.* TO  'sManager'@'localhost';

@@ -379,6 +379,53 @@ ON Hoat_dong_ve_thang FOR EACH ROW
 DELIMITER ;
 
 #-----------------------TRIGGER 2------------------------------------------------
+DELIMITER $$
+CREATE TRIGGER cap_nhat_gia_ve_le
+BEFORE INSERT ON Ve_le 
+FOR EACH ROW
+BEGIN
+	DECLARE STT1 INT;
+    DECLARE STT2 INT;
+    DECLARE Gia_ve_le DECIMAL(10,3) DEFAULT 0;
+    DECLARE Don_gia_ve DECIMAL(10,3) DEFAULT 0;
+    
+	SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_len AND Ma_tuyen = NEW.Ma_tuyen LIMIT 1 INTO STT1;
+    SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_xuong AND Ma_tuyen = NEW.Ma_tuyen LIMIT 1 INTO STT2;
+    
+    IF NEW.Ma_tuyen like "T___" THEN 
+    SELECT don_gia FROM tuyentaudien WHERE ma_tuyen_tau_xe = NEW.Ma_tuyen INTO Don_gia_ve;
+    ELSE 
+    SELECT bus FROM Bang_gia WHERE ID ="giave" INTO Don_gia_ve;
+    END IF;
+    SET Gia_ve_le = Don_gia_ve*((STT2-STT1+1) + (STT2-STT1+1)%2)/2;
+    UPDATE VE
+    SET Gia_ve= Gia_ve_le WHERE Ma_ve = NEW.Ma_ve;
+END $$
+DELIMITER ;
+----------------------------------
+DELIMITER $$
+CREATE TRIGGER cap_nhat_gia_ve_1_ngay
+BEFORE INSERT ON Ve_1_ngay
+FOR EACH ROW
+BEGIN
+	DECLARE Gia_ve_1_ngay DECIMAL(10,3) DEFAULT 0;
+    DECLARE Gia_cuoi_tuan DECIMAL(10,3) DEFAULT 0;
+    
+    SELECT ve_1_ngay FROM bang_gia WHERE ID="giave" INTO Gia_ve_1_ngay;
+    SELECT cuoi_tuan FROM bang_gia WHERE ID="giave" INTO Gia_cuoi_tuan;
+    
+    UPDATE VE
+    SET Gia_ve=Gia_ve_1_ngay WHERE Ma_ve = NEW.Ma_ve
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Saturday' 
+    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Sunday';
+    
+    UPDATE VE
+    SET Gia_ve=Gia_cuoi_tuan WHERE Ma_ve = NEW.Ma_ve
+    AND (DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
+    OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
+END $$
+DELIMITER ;
+
 
 DELIMITER $$
 CREATE TRIGGER them_gia_ve
@@ -605,16 +652,16 @@ insert into tuyentau_xe
     
 #---------------------------------------------
 
-insert into tuyenxebus
-	values(1,"B001");
-insert into tuyenxebus
-	values(2,"B002");
- insert into tuyenxebus
-	values(3,"B003");   
- insert into tuyenxebus
-	values(4,"B004");   
-insert into tuyenxebus
-	values(5,"B005"); 
+insert into tuyenxebus (ma_tuyen_tau_xe)
+	values("B001");
+insert into tuyenxebus (ma_tuyen_tau_xe)
+	values("B002");
+ insert into tuyenxebus (ma_tuyen_tau_xe)
+	values("B003");   
+ insert into tuyenxebus (ma_tuyen_tau_xe)
+	values("B004");   
+insert into tuyenxebus (ma_tuyen_tau_xe)
+	values("B005"); 
 
 #---------------------------------------------
 
@@ -634,26 +681,53 @@ insert into tuyentaudien
 insert into chuyentauxe
 	values("B001",1);
 insert into chuyentauxe
-	values("B002",2);
+	values("B001",2);
 insert into chuyentauxe
-	values("B003",3);
+	values("B002",1);
 insert into chuyentauxe
 	values("T001",1);
+insert into chuyentauxe
+	values("T002",1);
 insert into chuyentauxe
 	values("T002",2);
     
 #---------------------
 
 insert into ghega_tram
-	values("B001",1,"BT00001",2,"8:10","8:20" );
+	values("B001",1,"BT00001",1,"6:10:00","6:20:00" );
 insert into ghega_tram
-	values("B002",2,"BT00002",3,"6:07", "6:17");
+	values("B001",1,"BT00002",2,"6:40:00", "6:50:00");
+    
 insert into ghega_tram
-	values("B003",3,"TT00001",5,"10:12", "10:22");
+	values("B001",2,"BT00001",1,"6:40:00","6:50:00" );
 insert into ghega_tram
-	values("T001",1,"TT00002",6,"22:20", "22:30");
+	values("B001",2,"BT00002",2,"7:20:00", "7:30:00");
+    
 insert into ghega_tram
-	values("T002",2,"TT00003",8,"14:10","14:20");
+	values("B002",1,"BT00002",1,"8:00:00","8:10:00" );
+insert into ghega_tram
+	values("B002",1,"BT00001",2,"9:20:00", "9:30:00");
+
+insert into ghega_tram
+	values("T001",1,"TT00001",1,"12:20:00", "12:30:00");
+insert into ghega_tram
+	values("T001",1,"TT00002",2,"12:50:00", "13:00:00");
+insert into ghega_tram
+	values("T001",1,"TT00003",2,"13:20:00", "13:30:00");
+    
+insert into ghega_tram
+	values("T002",1,"TT00002",1,"13:20:00", "13:30:00");
+insert into ghega_tram
+	values("T002",1,"TT00003",2,"13:50:00", "14:00:00");
+insert into ghega_tram
+	values("T002",1,"TT00001",3,"14:20:00", "14:30:00");
+    
+insert into ghega_tram
+	values("T002",2,"TT00002",1,"14:20:00", "14:30:00");
+insert into ghega_tram
+	values("T002",2,"TT00003",2,"14:50:00", "15:00:00");
+insert into ghega_tram
+	values("T002",2,"TT00001",3,"15:20:00", "15:30:00");
     
 #------------------------
 
@@ -674,37 +748,37 @@ insert into bang_gia values('giave',3.000,10.000,12.000);
 #--------------------------------------------------------------------------------
 
 insert into ve
-	values("VO0106202111111",0,NULL,"2021-01-01 06:5:6","KH000001");
+	values("VO0106202111111",0,NULL,"2021-01-01 6:05:06","KH000001");
 insert into ve
-	values("VO0106202122222",0,NULL,"2021-02-02 7:5:6","KH000002");
+	values("VO0106202122222",0,NULL,"2021-02-02 7:05:06","KH000002");
 insert into ve
 	values("VO0106202133333",0,NULL,"2021-03-03 10:22:11","KH000003");
 insert into ve
-	values("VO0106202144444",0,NULL,"2021-04-04 8:9:10","KH000004");
+	values("VO0106202144444",0,NULL,"2021-04-04 8:09:10","KH000004");
 insert into ve
 	values("VO0106202155555",0,NULL,"2021-05-05 20:20:20","KH000005");
     
 insert into ve_le
-	values("VO0106202111111","B001","2021-02-02","BT00001","06:06:06","BT00002","07:07:07");
+	values("VO0106202111111","B001","2021-02-02","BT00001","06:15:06","BT00002","06:45:07");
 insert into ve_le
-	values("VO0106202122222","B005","2021-03-03","BT00002","07:07:07","BT00001","08:08:08");
+	values("VO0106202122222","B002","2021-03-03","BT00002","08:07:07","BT00001","09:28:08");
 insert into ve_le
-	values("VO0106202133333","T001","2021-04-04","TT00001","08:08:08","TT00002","09:09:09");
+	values("VO0106202133333","T001","2021-04-04","TT00001","12:25:08","TT00003","13:25:09");
 insert into ve_le
-	values("VO0106202144444","T002","2021-05-05","TT00002","09:09:09","TT00003","10:10:10");
+	values("VO0106202144444","T002","2021-05-05","TT00002","13:25:09","TT00001","14:26:10");
 insert into ve_le
-	values("VO0106202155555","T003","2021-06-06","TT00003","10:10:10","TT00001","11:11:11");
+	values("VO0106202155555","T002","2021-06-06","TT00003","14:56:10","TT00001","15:22:11");
     
 #--------------------------------
 --
 insert into ve
-	values("VD0106202111111",2,NULL,"2021-01-01 06:5:6","KH000001");
+	values("VD0106202111111",2,NULL,"2021-01-01 6:05:06","KH000001");
 insert into ve
-	values("VD0106202122222",2,NULL,"2021-02-02 7:5:6","KH000001");
+	values("VD0106202122222",2,NULL,"2021-02-02 7:05:06","KH000001");
 insert into ve
 	values("VD0106202133333",2,NULL,"2021-03-03 10:22:11","KH000003");
 insert into ve
-	values("VD0106202144444",2,NULL,"2021-04-04 8:9:10","KH000003");
+	values("VD0106202144444",2,NULL,"2021-04-04 8:09:10","KH000003");
 insert into ve
 	values("VD0106202155555",2,NULL,"2021-05-05 20:20:20","KH000005");
     
@@ -721,20 +795,20 @@ insert into ve_1_ngay
     
 #-----------------------------------
 
-insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'123000','124541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202122222",2,"B002","BT00002","BT00001",'125000','134541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202133333",1,"T001","TT00001","TT00002",'123000','124541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202144444",2,"T002","TT00002","TT00003",'133000','134541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202155555",3,"T003","TT00003","TT00001",'173000','184541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'6:15:00','6:45:00');
+insert into Hoat_dong_ve_1_ngay values("VD0106202111111",2,"B002","BT00002","BT00001",'8:07:03','9:23:10');
+insert into Hoat_dong_ve_1_ngay values("VD0106202111111",3,"T001","TT00001","TT00002",'12:23:00','12:52:02');
+insert into Hoat_dong_ve_1_ngay values("VD0106202111111",4,"T002","TT00002","TT00003",'13:23:17','13:53:36');
+insert into Hoat_dong_ve_1_ngay values("VD0106202133333",1,"T002","TT00003","TT00001",'14:52:02','15:22:35');
 --
 insert into ve
-	values("VM0106202111111",1,NULL,"2021-01-01 06:5:6","KH000001");
+	values("VM0106202111111",1,NULL,"2021-05-17 06:05:06","KH000001");
 insert into ve
-	values("VM0106202100002",1,NULL,"2021-02-02 7:5:6","KH000001");
+	values("VM0106202100002",1,NULL,"2021-05-19 7:05:06","KH000001");
 insert into ve
-	values("VM0106202100003",1,NULL,"2021-03-03 10:22:11","KH000003");
+	values("VM0106202100003",1,NULL,"2021-05-03 10:22:11","KH000003");
 insert into ve
-	values("VM0106202100004",1,NULL,"2021-04-04 8:9:10","KH000005");
+	values("VM0106202100004",1,NULL,"2021-05-20 8:09:10","KH000005");
 insert into ve
 	values("VM0106202100005",1,NULL,"2021-05-05 20:20:20","KH000005");
     
@@ -749,15 +823,15 @@ insert into ve_thang
 insert into ve_thang
 	values("VM0106202100004","T002","TT00002","TT00003");
 insert into ve_thang
-	values("VM0106202100005","T003","TT00003","TT00001");
+	values("VM0106202100005","T002","TT00003","TT00001");
     
 #------------------------------
 
-insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-18','123000','124541',"BT00001","BT00002");
-insert into Hoat_dong_ve_thang values ("VM0106202100002",'2021-05-19','073021','084241',"BT00002","BT00001");
-insert into Hoat_dong_ve_thang values ("VM0106202100003",'2021-05-20','082521','104241',"TT00001","TT00002");
-insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-21','062121','074241',"TT00002","TT00003");
-insert into Hoat_dong_ve_thang values ("VM0106202100005",'2021-05-22','122121','144241',"TT00003","TT00001");
+insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-18','6:15:10','6:45:20',"BT00001","BT00002");
+insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-19','6:45:00','7:25:00',"BT00001","BT00002");
+insert into Hoat_dong_ve_thang values ("VM0106202111111",'2021-05-20','6:13:15','6:47:21',"BT00001","BT00002");
+insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-21',"13:22:03","13:52:17","TT00002","TT00003");
+insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-22','14:25:52','14:52:25',"TT00002","TT00003");
 
 #-------------------------------
 

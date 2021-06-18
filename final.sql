@@ -425,7 +425,8 @@ BEGIN
     OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
 END $$
 DELIMITER ;
-----------------------------------
+
+----------------------------------------------------
 DELIMITER $$
 CREATE TRIGGER cap_nhat_gia_ve_thang
 BEFORE INSERT ON Ve_thang
@@ -438,27 +439,27 @@ BEGIN
     DECLARE Gia_ve_thang DECIMAL(10,3) DEFAULT 0;
     DECLARE Nghe_nghiep CHAR(30);
     
-	SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_len AND Ma_tuyen=NEW.Ma_tuyen INTO STT1;
-    SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_xuong AND Ma_tuyen=NEW.Ma_tuyen INTO STT2;
+	SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_1 AND Ma_tuyen=NEW.Ma_tuyen LIMIT 1 INTO STT1;
+    SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_2 AND Ma_tuyen=NEW.Ma_tuyen LIMIT 1 INTO STT2;
     SELECT Nghe_nghiep FROM Hanh_khach,Ve WHERE NEW.Ma_ve=Ve.Ma_ve AND Ve.Ma_hanh_khach=Hanh_khach.Ma_hanh_khach INTO Nghe_nghiep;
     
     IF NEW.Ma_tuyen like "T___" THEN 
-    SELECT don_gia FROM tuyentaudien WHERE ma_tuyen_tau_xe = NEW.Ma_tuyen INTO Don_gia_ve;
+		SELECT don_gia FROM tuyentaudien WHERE ma_tuyen_tau_xe = NEW.Ma_tuyen INTO Don_gia_ve;
     ELSE 
-    SELECT bus FROM Bang_ve WHERE ID ="giave" INTO Don_gia_ve;
+		SELECT bus FROM Bang_gia WHERE ID ="giave" INTO Don_gia_ve;
     END IF;
     SET Gia_ve_le = Don_gia_ve*((STT2-STT1+1) + (STT2-STT1+1)%2)/2;
     SET Gia_ve_thang =Gia_ve_le*40;
     IF Nghe_nghiep ="Sinh vien" OR Nghe_nghiep="Hoc sinh" THEN
-	SET Gia_ve_thang = Gia_ve_thang/2;
+		SET Gia_ve_thang = Gia_ve_thang/2;
     ELSEIF substring(Ma_ve,3,8)>curdate() THEN
-    SET Gia_ve_thang = Gia_ve_thang*0.9;
+		SET Gia_ve_thang = Gia_ve_thang*0.9;
     END IF;
     UPDATE VE
     SET Gia_ve= Gia_ve_thang WHERE Ma_ve = NEW.Ma_ve;
 END $$
 DELIMITER ;
-------------------------------------
+----------------------------------------------------
 DELIMITER $$
 CREATE TRIGGER them_gia_ve
 BEFORE INSERT ON Bang_gia
@@ -788,7 +789,7 @@ insert into ve
 insert into ve
 	values("VO0106202144444",0,NULL,"2021-04-04 8:09:10","KH000004");
 insert into ve
-	values("VO0106202155555",0,NULL,"2021-05-05 20:20:20","KH000005");
+	values("VO0106202155555",0,NULL,"2021-05-05 12:20:20","KH000005");
     
 insert into ve_le
 	values("VO0106202111111","B001","2021-02-02","BT00001","06:15:06","BT00002","06:45:07");
@@ -872,21 +873,21 @@ insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-22','14:25:52'
 insert into the_tu values("TT000001",'2020-05-22','KH000001');
 insert into the_tu values("TT000002",'2020-05-23','KH000002');
 insert into the_tu values("TT000003",'2020-05-25','KH000003');
-insert into the_tu values("TT000004",'2020-06-22','KH000003');
+insert into the_tu values("TT000004",'2020-06-22','KH000004');
 insert into the_tu values("TT000005",'2021-01-12','KH000005');
 
 #-------------------------------------
 
 insert into nv
-	values("NV0001","Lam cong","2001-06-07","aaaaaaemail","M",1111111111, NULL);
+	values("NV0001","cong nhan","2001-06-07","aaaaaaemail","M",1111111111, NULL);
 insert into nv
-	values("NV0002","Lam cong","1999-02-26"," bbbbbbemail","M",NULL,NULL);
+	values("NV0002","cong nhan","1999-02-26"," bbbbbbemail","M",NULL,NULL);
 insert into nv
-	values("NV0003","Sinh vien","1998-06-09","ccccccemail","F",NULL,NULL);
+	values("NV0003","Quan ly","1998-06-09","ccccccemail","F",NULL,NULL);
 insert into nv
-	values("NV0004","Lam cong","1998-05-26","mmmmmmemail","F",NULL,NULL);
+	values("NV0004","cong nhan","1998-05-26","mmmmmmemail","F",NULL,NULL);
 insert into nv
-	values("NV0005","Lam cong","1997-05-05","nnnnnnemail","F",1269845711,NULL);
+	values("NV0005","cong nhan","1997-05-05","nnnnnnemail","F",1269845711,NULL);
     
 #------------------------------------
 

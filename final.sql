@@ -2,7 +2,6 @@
 -- drop SCHEMA IF EXISTS btl;
 create schema btl;
 use	btl;
-
 #------------------- [CUONG]---------------------#
 CREATE TABLE GL(
      _no INT AUTO_INCREMENT PRIMARY KEY);
@@ -16,8 +15,8 @@ CREATE TABLE GIAOLO(
      _lat 		DECIMAL(10,7)		NOT NULL);
    
 CREATE TABLE CONDUONG(
-    _Ten_duong		varchar(100)	UNIQUE		NOT NULL,
-    _Ma_con_duong	varchar(8)		PRIMARY KEY);
+    _Ma_con_duong	varchar(8)		PRIMARY KEY,
+    _Ten_duong		varchar(100)	UNIQUE		NOT NULL);
 
 CREATE TABLE DOANDUONG(
 	_Ma_giao_lo_1	varchar(8) NOT NULL,
@@ -85,7 +84,7 @@ CREATE TABLE VE
 (
 	Ma_ve  CHAR(15) PRIMARY KEY,
     Loai_ve INT NOT NULL,
-    Gia_ve DECIMAL(10,3) NOT NULL,
+    Gia_ve DECIMAL(10,3),
     Ngay_gio_mua DATETIME NOT NULL,
     Ma_hanh_khach  CHAR(8),
     CONSTRAINT check_ve
@@ -139,69 +138,71 @@ CREATE TABLE VE_1_NGAY
 #--------------------- [LUN] ------------------#
 #------------------------HOAT DONG VE THANG--------------------------------------------------------
 create table HOAT_DONG_VE_THANG(
-Ma_ve CHAR(15),
-Ngay_su_dung DATE,
-Gio_len TIME,
-Gio_xuong TIME,
-Ga_tram_len CHAR(7) NOT NULL,
-Ga_tram_xuong CHAR(7) NOT NULL,
-PRIMARY KEY(Ma_ve,Ngay_su_dung,Gio_len),
-CONSTRAINT DK12_Gio_xuong_Gio_len
-	CHECK(Gio_xuong > Gio_len),
-CONSTRAINT fk12_Ma_ve
-	FOREIGN KEY (Ma_ve) REFERENCES Ve_thang(Ma_ve),
-CONSTRAINT fk12_Ga_tram_len
-	FOREIGN KEY (Ga_tram_len) REFERENCES Ga_tram(_Ma_ga_tram),
-CONSTRAINT fk12_Ga_tram_xuong
-	FOREIGN KEY (Ga_tram_xuong) REFERENCES Ga_tram(_Ma_ga_tram)
+	Ma_ve CHAR(15),
+	Ngay_su_dung DATE,
+	Gio_len TIME,
+	Gio_xuong TIME,
+	Ga_tram_len CHAR(7) NOT NULL,
+	Ga_tram_xuong CHAR(7) NOT NULL,
+	PRIMARY KEY(Ma_ve,Ngay_su_dung,Gio_len),
+	CONSTRAINT DK12_Gio_xuong_Gio_len
+		CHECK(Gio_xuong > Gio_len),
+	CONSTRAINT fk12_Ma_ve
+		FOREIGN KEY (Ma_ve) REFERENCES Ve_thang(Ma_ve),
+	CONSTRAINT fk12_Ga_tram_len
+		FOREIGN KEY (Ga_tram_len) REFERENCES Ga_tram(_Ma_ga_tram),
+	CONSTRAINT fk12_Ga_tram_xuong
+		FOREIGN KEY (Ga_tram_xuong) REFERENCES Ga_tram(_Ma_ga_tram)
 );
 #-------------------------HOAT DONG VE 1 NGAY-------------------------------------------------------
 create table hoat_dong_ve_1_ngay(
-Ma_ve CHAR(15),
-STT INT,
-Ma_tuyen CHAR(4) NOT NULL,
-Ga_tram_len CHAR(7),
-Ga_tram_xuong CHAR(7),
-Gio_len TIME,
-Gio_xuong TIME,
-PRIMARY KEY(Ma_ve,STT),
-CONSTRAINT DK14_Gio_xuong_Gio_len
-	CHECK(Gio_xuong > Gio_len),
-CONSTRAINT fk14_Ma_ve
-	FOREIGN KEY (Ma_ve) REFERENCES Ve_1_ngay(Ma_ve),
-CONSTRAINT fk14_Ga_tram_len
-	FOREIGN KEY (Ga_tram_len) REFERENCES Ga_tram(_Ma_ga_tram),
-CONSTRAINT fk14_Ga_tram_xuong
-	FOREIGN KEY (Ga_tram_xuong) REFERENCES Ga_tram(_Ma_ga_tram)
+	Ma_ve CHAR(15),
+	STT INT,
+	Ma_tuyen CHAR(4) NOT NULL,
+	Ga_tram_len CHAR(7),
+	Ga_tram_xuong CHAR(7),
+	Gio_len TIME,
+	Gio_xuong TIME,
+	PRIMARY KEY(Ma_ve,STT),
+	CONSTRAINT DK14_Gio_xuong_Gio_len
+		CHECK(Gio_xuong > Gio_len),
+	CONSTRAINT fk14_Ma_ve
+		FOREIGN KEY (Ma_ve) REFERENCES Ve_1_ngay(Ma_ve),
+	CONSTRAINT fk14_Ga_tram_len
+		FOREIGN KEY (Ga_tram_len) REFERENCES Ga_tram(_Ma_ga_tram),
+	CONSTRAINT fk14_Ga_tram_xuong
+		FOREIGN KEY (Ga_tram_xuong) REFERENCES Ga_tram(_Ma_ga_tram)
 );
 #--------------------------------------------------------------------------------
 
 #--------------------------------HANH KHACH------------------------------------------------
 create table Hanh_khach(
-Ma_hanh_khach CHAR(8) primary key check(Ma_hanh_khach like "KH______")
-CHECK	(CAST(SUBSTRING(Ma_hanh_khach,3,6) as SIGNED) >= 0 and CAST(SUBSTRING(Ma_hanh_khach,3,6) as SIGNED) <= 999999),
-CMND VARCHAR(9) not null unique,
-Nghe_nghiep char(30),
-So_dien_thoai VARCHAR(10) unique,
-Gioi_tinh char,
-Email varchar(100),
-Ngay_sinh date
+	Ma_hanh_khach CHAR(8) primary key check(Ma_hanh_khach like "KH______"),
+	CMND VARCHAR(9) not null unique,
+	Nghe_nghiep char(30),
+	So_dien_thoai VARCHAR(10) unique,
+	Gioi_tinh char,
+	Email varchar(100),
+	Ngay_sinh date,
+    CONSTRAINT _ma_hanh_khach
+		CHECK	(CAST(SUBSTRING(Ma_hanh_khach,3,6) as SIGNED) >= 0 and CAST(SUBSTRING(Ma_hanh_khach,3,6) as SIGNED) <= 999999)
 );
 #----------------------------THE TU----------------------------------------------------
 create table the_tu(
-Ma_the_tu VARCHAR(8) primary key check(Ma_the_tu like "TT______")
-CHECK	(CAST(SUBSTRING(Ma_the_tu,3,6) as SIGNED) >= 0 and CAST(SUBSTRING(Ma_the_tu,3,6) as SIGNED) <= 999999),
-Ngay_mua datetime NOT NULL,
-Ma_hanh_khach VARCHAR(8) NOT NULL,
-constraint fk17_Ma_hanh_khach
-	foreign key (Ma_hanh_khach) references Hanh_khach(Ma_hanh_khach)
+	Ma_the_tu VARCHAR(8) primary key check(Ma_the_tu like "TT______"),
+	Ngay_mua datetime NOT NULL,
+	Ma_hanh_khach VARCHAR(8) NOT NULL,
+    CONSTRAINT _ma_the_tu
+		CHECK	(CAST(SUBSTRING(Ma_the_tu,3,6) as SIGNED) >= 0 and CAST(SUBSTRING(Ma_the_tu,3,6) as SIGNED) <= 999999),
+	constraint fk17_Ma_hanh_khach
+		foreign key (Ma_hanh_khach) references Hanh_khach(Ma_hanh_khach)
 );
 #---------------------------BANG VE-----------------------------------------------------
-CREATE TABLE Bang_ve (
+CREATE TABLE Bang_gia (
      ID VARCHAR(10) PRIMARY KEY,
      bus DECIMAL(10 , 3 ),
      ve_1_ngay DECIMAL(10 , 3 ),
-    cuoi_tuan DECIMAL(10 , 3 )
+     cuoi_tuan DECIMAL(10 , 3 )
 );
 #----------------------------------------------#
 
@@ -316,8 +317,8 @@ BEFORE INSERT
 ON GIAOLO FOR EACH ROW
 BEGIN
 	declare maxi int;
-     	insert into GL value (NULL);
-     	select max(_no) from GL into maxi;
+	insert into GL value (NULL);
+	select max(_no) from GL into maxi;
 	SET NEW._Ma_giao_lo = CONCAT("GL",maxi);
 END $$
 DELIMITER ;
@@ -330,8 +331,8 @@ BEFORE INSERT
 ON CONDUONG FOR EACH ROW
 BEGIN
 	declare maxi int;
-      	insert into CD value (NULL);
-      	select max(_no) from CD into maxi;
+	insert into CD value (NULL);
+	select max(_no) from CD into maxi;
 	SET NEW._Ma_con_duong = CONCAT("CD",maxi);
 END $$
 DELIMITER ;
@@ -346,10 +347,10 @@ BEGIN
 	DECLARE don_gia_bus DECIMAL(10, 3);
     
 	DECLARE cntDonGiaBus INT;
-    SELECT Count(*) FROM Bang_ve INTO cntDonGiaBus;
+    SELECT Count(*) FROM Bang_gia INTO cntDonGiaBus;
     
     IF cntDonGiaBus = 1 THEN 
-		SET don_gia_bus = (SELECT bus FROM Bang_ve);
+		SET don_gia_bus = (SELECT bus FROM Bang_gia);
 		IF NEW.don_gia <= don_gia_bus THEN 
 			signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia tau dien phai lon hon don gia bus';
 		END IF;
@@ -381,11 +382,11 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER them_gia_ve
-BEFORE INSERT ON Bang_ve
+BEFORE INSERT ON Bang_gia
 FOR EACH ROW
 BEGIN
 	DECLARE N INT;
-    SELECT COUNT(*) FROM Bang_ve INTO N;
+    SELECT COUNT(*) FROM Bang_gia INTO N;
     IF N=1 THEN signal sqlstate '45000' set message_text = 'Da co gia ve roi ban nen update';
     END IF;
     
@@ -393,42 +394,17 @@ BEGIN
     IF N <> 0 AND NEW.bus >= (SELECT min(don_gia) FROM TUYENTAUDIEN) THEN
 		signal sqlstate '45000' set message_text = 'Khong the insert duoc vi don gia bus phai nho hon don gia tau dien';
 	END IF;
-    
-	UPDATE VE
-    SET Gia_ve=NEW.bus WHERE Loai_ve=0;
-    
-    UPDATE VE
-    SET Gia_ve=NEW.ve_1_ngay WHERE Loai_ve=1 
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Saturday' 
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Sunday';
-    
-    UPDATE VE
-    SET Gia_ve=NEW.cuoi_tuan WHERE Loai_ve=1
-    AND (DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
-    OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
 END $$
 DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER cap_nhat_gia_ve
-BEFORE UPDATE ON Bang_ve
+BEFORE UPDATE ON Bang_gia
 FOR EACH ROW
 BEGIN
 	IF NEW.bus >= (SELECT min(don_gia) FROM TUYENTAUDIEN)
     THEN signal sqlstate '45000' set message_text = 'Khong the update duoc vi don gia bus phai nho hon don gia tau dien';
     END IF;
-	UPDATE VE
-    SET Gia_ve=NEW.bus WHERE Loai_ve=0;
-    
-    UPDATE VE
-    SET Gia_ve=NEW.ve_1_ngay WHERE Loai_ve=1 
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Saturday' 
-    AND DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) != 'Sunday';
-    
-    UPDATE VE
-    SET Gia_ve=NEW.cuoi_tuan WHERE Loai_ve=1
-    AND (DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Saturday' 
-    OR DAYNAME(STR_TO_DATE(substring(Ma_ve,3,8),'%d%m%Y')) = 'Sunday');
 END $$
 DELIMITER ;
 #------------------------------------------------#
@@ -541,7 +517,6 @@ BEGIN
 	IF ma_tuyen_tau <> UPPER(ma_tuyen_tau) THEN
 		signal sqlstate '45000' set message_text = 'Ma tuyen tau phai la mot chu in hoa';
 	END IF;
-    
 	
     SELECT Count(*) FROM Bang_ve INTO cntDonGiaBus;
     
@@ -692,44 +667,23 @@ insert into hanh_khach
 	values("KH000004",444444444,"Sinh vien",4444444444,"F","ddddddemail","19980101");
 insert into hanh_khach
 	values("KH000005",555555555,"Sinh vien",5555555555,"M","eeeeeeemail","19970101");
-    
-#------------------------
+#--------------------------------------------------------------------------------
+
+insert into bang_gia values('giave',3.000,10.000,12.000);
+
+#--------------------------------------------------------------------------------
 
 insert into ve
-	values("VO0106202111111",0,10000,"2021-01-01 06:5:6","KH000001");
+	values("VO0106202111111",0,NULL,"2021-01-01 06:5:6","KH000001");
 insert into ve
-	values("VO0106202122222",0,9000,"2021-02-02 7:5:6","KH000002");
+	values("VO0106202122222",0,NULL,"2021-02-02 7:5:6","KH000002");
 insert into ve
-	values("VO0106202133333",0,3000,"2021-03-03 10:22:11","KH000003");
+	values("VO0106202133333",0,NULL,"2021-03-03 10:22:11","KH000003");
 insert into ve
-	values("VO0106202144444",0,5000,"2021-04-04 8:9:10","KH000004");
+	values("VO0106202144444",0,NULL,"2021-04-04 8:9:10","KH000004");
 insert into ve
-	values("VO0106202155555",0,6000,"2021-05-05 20:20:20","KH000005");
---
-insert into ve
-	values("VD0106202111111",2,10000,"2021-01-01 06:5:6","KH000001");
-insert into ve
-	values("VD0106202122222",2,9000,"2021-02-02 7:5:6","KH000001");
-insert into ve
-	values("VD0106202133333",2,3000,"2021-03-03 10:22:11","KH000003");
-insert into ve
-	values("VD0106202144444",2,5000,"2021-04-04 8:9:10","KH000003");
-insert into ve
-	values("VD0106202155555",2,6000,"2021-05-05 20:20:20","KH000005");
---
-insert into ve
-	values("VM0106202111111",1,10000,"2021-01-01 06:5:6","KH000001");
-insert into ve
-	values("VM0106202100002",1,8000,"2021-02-02 7:5:6","KH000001");
-insert into ve
-	values("VM0106202100003",1,3000,"2021-03-03 10:22:11","KH000003");
-insert into ve
-	values("VM0106202100004",1,5000,"2021-04-04 8:9:10","KH000005");
-insert into ve
-	values("VM0106202100005",1,6000,"2021-05-05 20:20:20","KH000005");
+	values("VO0106202155555",0,NULL,"2021-05-05 20:20:20","KH000005");
     
-#-------------------------------
-
 insert into ve_le
 	values("VO0106202111111","B001","2021-02-02","BT00001","06:06:06","BT00002","07:07:07");
 insert into ve_le
@@ -742,6 +696,49 @@ insert into ve_le
 	values("VO0106202155555","T003","2021-06-06","TT00003","10:10:10","TT00001","11:11:11");
     
 #--------------------------------
+--
+insert into ve
+	values("VD0106202111111",2,NULL,"2021-01-01 06:5:6","KH000001");
+insert into ve
+	values("VD0106202122222",2,NULL,"2021-02-02 7:5:6","KH000001");
+insert into ve
+	values("VD0106202133333",2,NULL,"2021-03-03 10:22:11","KH000003");
+insert into ve
+	values("VD0106202144444",2,NULL,"2021-04-04 8:9:10","KH000003");
+insert into ve
+	values("VD0106202155555",2,NULL,"2021-05-05 20:20:20","KH000005");
+    
+insert into ve_1_ngay
+	values("VD0106202111111","2021-02-02");
+insert into ve_1_ngay
+	values("VD0106202122222","2021-03-03");
+insert into ve_1_ngay
+	values("VD0106202133333","2021-04-04");
+insert into ve_1_ngay
+	values("VD0106202144444","2021-05-05");
+insert into ve_1_ngay
+	values("VD0106202155555","2021-06-06");
+    
+#-----------------------------------
+
+insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'123000','124541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202122222",2,"B002","BT00002","BT00001",'125000','134541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202133333",1,"T001","TT00001","TT00002",'123000','124541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202144444",2,"T002","TT00002","TT00003",'133000','134541');
+insert into Hoat_dong_ve_1_ngay values("VD0106202155555",3,"T003","TT00003","TT00001",'173000','184541');
+--
+insert into ve
+	values("VM0106202111111",1,NULL,"2021-01-01 06:5:6","KH000001");
+insert into ve
+	values("VM0106202100002",1,NULL,"2021-02-02 7:5:6","KH000001");
+insert into ve
+	values("VM0106202100003",1,NULL,"2021-03-03 10:22:11","KH000003");
+insert into ve
+	values("VM0106202100004",1,NULL,"2021-04-04 8:9:10","KH000005");
+insert into ve
+	values("VM0106202100005",1,NULL,"2021-05-05 20:20:20","KH000005");
+    
+#-------------------------------
 
 insert into ve_thang
 	values("VM0106202111111","B001","BT00001","BT00002");
@@ -763,25 +760,6 @@ insert into Hoat_dong_ve_thang values ("VM0106202100004",'2021-05-21','062121','
 insert into Hoat_dong_ve_thang values ("VM0106202100005",'2021-05-22','122121','144241',"TT00003","TT00001");
 
 #-------------------------------
-
-insert into ve_1_ngay
-	values("VD0106202111111","2021-02-02");
-insert into ve_1_ngay
-	values("VD0106202122222","2021-03-03");
-insert into ve_1_ngay
-	values("VD0106202133333","2021-04-04");
-insert into ve_1_ngay
-	values("VD0106202144444","2021-05-05");
-insert into ve_1_ngay
-	values("VD0106202155555","2021-06-06");
-    
-#-----------------------------------
-
-insert into Hoat_dong_ve_1_ngay values("VD0106202111111",1,"B001","BT00001","BT00002",'123000','124541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202122222",2,"B002","BT00002","BT00001",'125000','134541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202133333",1,"T001","TT00001","TT00002",'123000','124541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202144444",2,"T002","TT00002","TT00003",'133000','134541');
-insert into Hoat_dong_ve_1_ngay values("VD0106202155555",3,"T003","TT00003","TT00001",'173000','184541');
 
 #------------------------------------
 
@@ -816,12 +794,6 @@ insert into ga_tramlv
 	values("NV0004","TT00002");
 insert into ga_tramlv
 	values("NV0005","TT00003");
-
-#--------------------------------------------------------------------------------
-
-insert into bang_ve values('giave',3.000,10.000,12.000);
-
-#--------------------------------------------------------------------------------
 
 #-------------------------------------------------- [ADD USER] ---------------------------------------------------#
 CREATE USER 'sManager'@'localhost' IDENTIFIED BY '1';

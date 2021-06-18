@@ -441,7 +441,7 @@ BEGIN
     
 	SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_1 AND Ma_tuyen=NEW.Ma_tuyen LIMIT 1 INTO STT1;
     SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_2 AND Ma_tuyen=NEW.Ma_tuyen LIMIT 1 INTO STT2;
-    SELECT Nghe_nghiep FROM Hanh_khach,Ve WHERE NEW.Ma_ve=Ve.Ma_ve AND Ve.Ma_hanh_khach=Hanh_khach.Ma_hanh_khach INTO Nghe_nghiep;
+    SELECT Hanh_khach.Nghe_nghiep FROM Hanh_khach,Ve WHERE NEW.Ma_ve=Ve.Ma_ve AND Ve.Ma_hanh_khach=Hanh_khach.Ma_hanh_khach INTO Nghe_nghiep;
     
     IF NEW.Ma_tuyen like "T___" THEN 
 		SELECT don_gia FROM tuyentaudien WHERE ma_tuyen_tau_xe = NEW.Ma_tuyen INTO Don_gia_ve;

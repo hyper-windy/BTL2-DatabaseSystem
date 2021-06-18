@@ -173,7 +173,7 @@ create table hoat_dong_ve_1_ngay(
 	CONSTRAINT fk14_Ga_tram_xuong
 		FOREIGN KEY (Ga_tram_xuong) REFERENCES Ga_tram(_Ma_ga_tram)
 	CONSTRAINT fk14_Ma_tuyen
-		FOREIGN KEY (Ma_tuyen) REFERENCES Tuyentauxe(Ma_tuyen)
+		FOREIGN KEY (Ma_tuyen) REFERENCES Tuyentau_xe(Ma_tuyen)
 	
 );
 #--------------------------------------------------------------------------------

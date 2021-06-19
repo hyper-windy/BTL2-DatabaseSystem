@@ -749,7 +749,7 @@ insert into ghega_tram
 insert into ghega_tram
 	values("T001",1,"TT00002",2,"12:50:00", "13:00:00");
 insert into ghega_tram
-	values("T001",1,"TT00003",2,"13:20:00", "13:30:00");
+	values("T001",1,"TT00003",3,"13:20:00", "13:30:00");
     
 insert into ghega_tram
 	values("T002",1,"TT00002",1,"13:20:00", "13:30:00");

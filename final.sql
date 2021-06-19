@@ -498,10 +498,10 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE LoTrinhTuyenXeTau(IN ma_tuyen CHAR(4))
 BEGIN
-	SELECT _Ten
-   	FROM ghega_tram ch, GA_TRAM gt
-   	WHERE gt._Ma_ga_tram = ch.MaGT AND ch.Ma_tuyen = ma_tuyen AND ch.stt = 1
-   	ORDER BY ch.STT_dung;
+		SELECT GROUP_CONCAT(CONCAT(' ', CONCAT("Trạm " ,gt._Ten), '') order by ch.STT_dung ) AS LoTrinh
+		FROM ghega_tram ch, GA_TRAM gt
+		WHERE gt._Ma_ga_tram = ch.MaGT AND ch.Ma_tuyen = ma_tuyen AND ch.stt = 1
+		ORDER BY ch.STT_dung;
 END; $$
 DELIMITER ;
 

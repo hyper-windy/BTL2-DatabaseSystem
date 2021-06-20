@@ -439,6 +439,7 @@ BEGIN
     DECLARE Don_gia_ve DECIMAL(10,3) DEFAULT 0;
     DECLARE Gia_ve_thang DECIMAL(10,3) DEFAULT 0;
     DECLARE Nghe_nghiep CHAR(30);
+	DECLARE NGC VARCHAR(100);
     
 	SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_1 AND Ma_tuyen=NEW.Ma_tuyen LIMIT 1 INTO STT1;
     SELECT STT_dung FROM gheGa_Tram WHERE MaGT = NEW.Ma_ga_tram_2 AND Ma_tuyen=NEW.Ma_tuyen LIMIT 1 INTO STT2;
@@ -449,13 +450,15 @@ BEGIN
     ELSE 
 		SELECT bus FROM Bang_gia WHERE ID ="giave" INTO Don_gia_ve;
     END IF;
+		SELECT Ngay_gio_mua FROM Hanh_khach,Ve WHERE Ve.Ma_hanh_khach=Hanh_khach.Ma_hanh_khach AND Loai_ve = 2 ORDER BY Ngay_gio_mua LIMIT 1 INTO NGC ;
+
     
     SET Gia_ve_le = Don_gia_ve*((STT2-STT1+1) + (STT2-STT1+1)%2)/2;
     SET Gia_ve_thang =Gia_ve_le*40;
     
     IF Nghe_nghiep ="Sinh vien" OR Nghe_nghiep="Hoc sinh" THEN
 		SET Gia_ve_thang = Gia_ve_thang/2;
-    ELSEIF STR_TO_DATE(substring(NEW.Ma_ve,3,8),'%d%m%Y')>curdate() THEN
+    ELSEIF STR_TO_DATE(substring(NEW.Ma_ve,3,8),'%d%m%Y')< DATE_ADD(NGC, INTERVAL 30 DAY) THEN
 		SET Gia_ve_thang = Gia_ve_thang*0.9;
     END IF;
     UPDATE VE
